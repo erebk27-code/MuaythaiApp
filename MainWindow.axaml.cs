@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using MuaythaiApp.Security;
 using System;
 using System.Threading.Tasks;
@@ -221,7 +222,10 @@ public partial class MainWindow : Window
 
         var message = await AutoUpdateService.CheckForUpdatesAndMaybeApplyAsync(progress =>
         {
-            UpdateStatusText.Text = $"Downloading update... {progress}%";
+            Dispatcher.UIThread.Post(() =>
+            {
+                UpdateStatusText.Text = $"Downloading update... {progress}%";
+            });
         });
 
         UpdateStatusText.Text = message;
