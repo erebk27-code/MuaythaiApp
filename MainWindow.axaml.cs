@@ -217,8 +217,11 @@ public partial class MainWindow : Window
 
     private async Task CheckForUpdatesAsync(bool isAutomatic)
     {
-        CheckUpdatesButton.IsEnabled = false;
-        UpdateStatusText.Text = "Checking for updates...";
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            CheckUpdatesButton.IsEnabled = false;
+            UpdateStatusText.Text = "Checking for updates...";
+        });
 
         var message = await AutoUpdateService.CheckForUpdatesAndMaybeApplyAsync(progress =>
         {
@@ -228,8 +231,11 @@ public partial class MainWindow : Window
             });
         });
 
-        UpdateStatusText.Text = message;
-        CheckUpdatesButton.IsEnabled = AutoUpdateSettingsService.IsAutoUpdateSupported();
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            UpdateStatusText.Text = message;
+            CheckUpdatesButton.IsEnabled = AutoUpdateSettingsService.IsAutoUpdateSupported();
+        });
 
         if (!isAutomatic)
             StartupLogger.Log($"Manual update check result: {message}");
