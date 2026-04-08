@@ -1,0 +1,362 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.ScoreWindow"
+    Width="1200"
+    Height="900"
+    MinWidth="1100"
+    MinHeight="820"
+    Background="White"
+    Title="Scoreboard">
+
+    <Grid>
+    <Grid IsHitTestVisible="False"
+          Opacity="0.05"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center">
+        <Image Source="avares://MuaythaiApp/PZMT.png"
+               Width="360"
+               Height="360"
+               Stretch="Uniform"/>
+    </Grid>
+
+    <Grid Margin="20"
+          VerticalAlignment="Stretch"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto"
+          RowSpacing="16">
+
+        <TextBlock Grid.Row="0"
+                   Text="SCOREBOARD"
+                   FontSize="30"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="120,*,140,140,140"
+              ColumnSpacing="10">
+            <TextBlock Grid.Column="0" Text="Bout No." FontWeight="Bold"/>
+            <TextBlock Grid.Column="1" x:Name="BoutText"/>
+            <TextBlock Grid.Column="2" Text="Category" FontWeight="Bold"/>
+            <TextBlock Grid.Column="3" x:Name="CategoryText"/>
+            <TextBlock Grid.Column="4" x:Name="WeightText"/>
+        </Grid>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="120,180,120,120,120,120"
+              ColumnSpacing="10">
+            <TextBlock Grid.Column="0" Text="Judges Count" FontWeight="Bold"/>
+            <ComboBox Grid.Column="1"
+                      x:Name="JudgesCountCombo"
+                      Width="100"
+                      HorizontalAlignment="Left"
+                      SelectionChanged="JudgesCountChanged"/>
+            <ComboBox Grid.Column="3"
+                      x:Name="JudgeCombo"
+                      Width="100"
+                      HorizontalAlignment="Left"
+                      SelectionChanged="JudgeChanged"/>
+            <TextBlock Grid.Column="2" Text="Judge" FontWeight="Bold"/>
+            <TextBlock Grid.Column="4" Text="Rounds" FontWeight="Bold"/>
+            <TextBlock Grid.Column="5" x:Name="RoundsText"/>
+        </Grid>
+
+        <Expander Grid.Row="3"
+                  Header="Officials"
+                  IsExpanded="False">
+            <Border Background="#F3F4F6"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="12">
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*,*" ColumnSpacing="10" RowSpacing="10">
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Referee Name" FontWeight="Bold"/>
+                        <TextBox x:Name="RefereeNameBox" Watermark="Referee"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Judge 1" FontWeight="Bold"/>
+                        <TextBox x:Name="Judge1NameBox" Watermark="Judge 1"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4">
+                        <TextBlock Text="Judge 2" FontWeight="Bold"/>
+                        <TextBox x:Name="Judge2NameBox" Watermark="Judge 2"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Judge 3" FontWeight="Bold"/>
+                        <TextBox x:Name="Judge3NameBox" Watermark="Judge 3"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4"
+                                x:Name="Judge4Panel">
+                        <TextBlock Text="Judge 4" FontWeight="Bold"/>
+                        <TextBox x:Name="Judge4NameBox" Watermark="Judge 4"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4"
+                                x:Name="Judge5Panel">
+                        <TextBlock Text="Judge 5" FontWeight="Bold"/>
+                        <TextBox x:Name="Judge5NameBox" Watermark="Judge 5"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Expander>
+
+        <Border Grid.Row="4"
+                Background="#F3F4F6"
+                BorderBrush="#D1D5DB"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12">
+            <Grid ColumnDefinitions="140,160,140,160,*"
+                  ColumnSpacing="12">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Timing" FontWeight="Bold"/>
+                    <TextBlock x:Name="TimerPhaseText"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1"
+                           x:Name="TimerDisplayText"
+                           FontSize="36"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2" Spacing="4">
+                    <TextBlock Text="Round" FontWeight="Bold"/>
+                    <TextBlock x:Name="TimerRoundText"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3" Spacing="4">
+                    <TextBlock Text="Break" FontWeight="Bold"/>
+                    <TextBlock x:Name="TimerBreakText"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+                <TextBlock Grid.Column="4"
+                           x:Name="TimerHintText"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="5"
+              ColumnDefinitions="*,120,*,120,120"
+              ColumnSpacing="10">
+            <Border Grid.Column="0" Background="#B30000" Padding="10" CornerRadius="6">
+                <TextBlock x:Name="RedNameText" Foreground="White" FontWeight="Bold"/>
+            </Border>
+            <TextBlock Grid.Column="1"
+                       Text="Round"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+            <Border Grid.Column="2" Background="#1540D1" Padding="10" CornerRadius="6">
+                <TextBlock x:Name="BlueNameText" Foreground="White" FontWeight="Bold"/>
+            </Border>
+            <TextBlock Grid.Column="3"
+                       Text="Red Total"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+            <TextBlock Grid.Column="4"
+                       Text="Blue Total"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+        </Grid>
+
+        <Border Grid.Row="6"
+                VerticalAlignment="Stretch"
+                BorderBrush="#444"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="14">
+            <Grid VerticalAlignment="Stretch"
+                  RowDefinitions="Auto,*,*,*,Auto,*"
+                  RowSpacing="18">
+
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,120,*,120,120"
+                      ColumnSpacing="10">
+                    <TextBlock Grid.Column="0" Text="Red points / warnings" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="1" Text="Round 1" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="2" Text="Blue points / warnings" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="3" Text="Red Points" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="4" Text="Blue Points" HorizontalAlignment="Center" FontWeight="Bold"/>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="*,120,*,120,120"
+                      ColumnSpacing="10"
+                      MinHeight="84"
+                      VerticalAlignment="Stretch">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round1RedInputBox"
+                                 Width="80"
+                                 Watermark="10"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round1RedWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round1BlueInputBox"
+                                 Width="80"
+                                 Watermark="9"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round1BlueWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" x:Name="Round1RedPointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="4" x:Name="Round1BluePointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                </Grid>
+
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="*,120,*,120,120"
+                      ColumnSpacing="10"
+                      MinHeight="84"
+                      VerticalAlignment="Stretch">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round2RedInputBox"
+                                 Width="80"
+                                 Watermark="10"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round2RedWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round2BlueInputBox"
+                                 Width="80"
+                                 Watermark="9"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round2BlueWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" x:Name="Round2RedPointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="4" x:Name="Round2BluePointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                </Grid>
+
+                <Grid Grid.Row="3"
+                      ColumnDefinitions="*,120,*,120,120"
+                      ColumnSpacing="10"
+                      MinHeight="84"
+                      VerticalAlignment="Stretch">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round3RedInputBox"
+                                 Width="80"
+                                 Watermark="10"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round3RedWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="Round3BlueInputBox"
+                                 Width="80"
+                                 Watermark="9"
+                                 TextChanged="RoundInputChanged"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 TextAlignment="Center"
+                                 FontSize="22"
+                                 FontWeight="Bold"/>
+                        <CheckBox x:Name="Round3BlueWarningBox" Content="Warning" Click="RoundInputChanged"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" x:Name="Round3RedPointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="4" x:Name="Round3BluePointsText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" FontWeight="Bold"/>
+                </Grid>
+
+                <Grid Grid.Row="4"
+                      ColumnDefinitions="*,120,*,120,120"
+                      ColumnSpacing="10"
+                      MinHeight="56">
+                    <TextBlock Grid.Column="0" Text="Total" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="2" Text="Total" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="3" x:Name="RedTotalText" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="4" x:Name="BlueTotalText" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold"/>
+                </Grid>
+
+                <Border Grid.Row="5"
+                        VerticalAlignment="Stretch"
+                        Background="#F3F4F6"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
+                        Padding="14"
+                        CornerRadius="6">
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="150,150,150,180,190,100"
+                          ColumnSpacing="12"
+                          RowSpacing="10">
+                        <CheckBox Grid.Row="0" Grid.Column="0" x:Name="StyleTieBreakBox" Content="Better style" Foreground="Black"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" x:Name="DefenseTieBreakBox" Content="Better defense" Foreground="Black"/>
+                        <CheckBox Grid.Row="0" Grid.Column="2" x:Name="OtherTieBreakBox" Content="Other" Foreground="Black"/>
+                        <StackPanel Grid.Row="0" Grid.Column="3" Spacing="4">
+                            <TextBlock Text="Result Method" FontWeight="Bold"/>
+                            <ComboBox x:Name="ResultMethodCombo" Width="140" SelectionChanged="ResultMethodChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="4" Spacing="4">
+                            <TextBlock Text="Winner" FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="RedWinnerButton"
+                                        Content="Red"
+                                        Width="80"
+                                        Click="SelectRedWinnerClick"/>
+                                <Button x:Name="BlueWinnerButton"
+                                        Content="Blue"
+                                        Width="80"
+                                        Click="SelectBlueWinnerClick"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="5" Spacing="4">
+                            <TextBlock Text="Result Round" FontWeight="Bold"/>
+                            <ComboBox x:Name="ResultRoundCombo" Width="90"/>
+                        </StackPanel>
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="6"
+                                   x:Name="WinnerText"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="7" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+            <Button Content="Next Fight" Click="NextFightClick"/>
+            <Button Content="Save Score" Click="SaveScoreClick"/>
+            <Button Content="Show Winner" Click="ShowWinnerClick"/>
+        </StackPanel>
+
+    </Grid>
+    </Grid>
+
+</Window>

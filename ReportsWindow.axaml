@@ -1,0 +1,81 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.ReportsWindow"
+    Width="1180"
+    Height="760"
+    Background="White"
+    Title="Reports">
+
+<Grid>
+<Grid IsHitTestVisible="False"
+      Opacity="0.05"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+    <Image Source="avares://MuaythaiApp/PZMT.png"
+           Width="340"
+           Height="340"
+           Stretch="Uniform"/>
+</Grid>
+
+<Grid Margin="12" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="12">
+    <TextBlock Grid.Row="0"
+               x:Name="ReportsTitleText"
+               Text="Reports"
+               FontSize="22"
+               FontWeight="Bold"/>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="10">
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="TournamentTitleLabelText" Text="Tournament Title"/>
+            <TextBox x:Name="TournamentTitleBox"
+                     Width="260"
+                     TextChanged="TournamentTitleChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="ReportTypeLabelText" Text="Report Type"/>
+            <ComboBox x:Name="ReportTypeCombo"
+                      Width="220"
+                      SelectionChanged="ReportChanged"/>
+        </StackPanel>
+
+        <Button x:Name="RefreshButton" Content="Refresh"
+                VerticalAlignment="Bottom"
+                Click="RefreshClick"/>
+
+        <Button x:Name="ExportCsvButton" Content="Export CSV"
+                VerticalAlignment="Bottom"
+                Click="ExportCsvClick"/>
+
+        <Button x:Name="ExportPdfButton" Content="Export PDF"
+                VerticalAlignment="Bottom"
+                Click="ExportPdfClick"/>
+
+        <Button x:Name="PrintButton" Content="Print"
+                VerticalAlignment="Bottom"
+                Click="PrintClick"/>
+    </StackPanel>
+
+    <TextBlock Grid.Row="2"
+               x:Name="SummaryText"
+               Foreground="#444"/>
+
+    <Border Grid.Row="3"
+            BorderBrush="#444"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10">
+        <TextBox x:Name="PreviewTextBox"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="NoWrap"
+                 FontFamily="Cascadia Mono, Consolas, Menlo, monospace"
+                 FontSize="14"/>
+    </Border>
+</Grid>
+</Grid>
+
+</Window>

@@ -1,0 +1,108 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.FightResultsWindow"
+    Width="1100"
+    Height="650"
+    Background="White"
+    Title="Fight Results">
+
+<Grid>
+<Grid IsHitTestVisible="False"
+      Opacity="0.06"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+    <Image Source="avares://MuaythaiApp/PZMT.png"
+           Width="320"
+           Height="320"
+           Stretch="Uniform"/>
+</Grid>
+
+<Grid Margin="12" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+
+    <TextBlock Grid.Row="0"
+               x:Name="FightResultsTitleText"
+               Text="Fight Results"
+               FontSize="22"
+               FontWeight="Bold"/>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="10">
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="DayFilterLabelText" Text="Day"/>
+            <ComboBox x:Name="DayFilterCombo"
+                      Width="110"
+                      SelectionChanged="DayChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="SearchWinnerLabelText" Text="Search Winner"/>
+            <TextBox x:Name="SearchBox"
+                     Width="260"
+                     Watermark="Winner, red, blue or category"
+                     TextChanged="SearchChanged"/>
+        </StackPanel>
+
+        <TextBlock x:Name="SummaryText"
+                   VerticalAlignment="Bottom"/>
+    </StackPanel>
+
+    <Border Grid.Row="2"
+            BorderBrush="#444"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="8">
+
+        <Grid RowDefinitions="Auto,*" RowSpacing="6">
+
+            <Border Grid.Row="0"
+                    Background="#1F1F1F"
+                    Padding="10"
+                    CornerRadius="6">
+                <Grid ColumnDefinitions="80,70,150,150,150,120,120,100,*"
+                      ColumnSpacing="10">
+                    <TextBlock x:Name="ResultDayHeaderText" Grid.Column="0" Text="Day" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultBoutHeaderText" Grid.Column="1" Text="Bout" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultRedHeaderText" Grid.Column="2" Text="Red" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultBlueHeaderText" Grid.Column="3" Text="Blue" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultWinnerHeaderText" Grid.Column="4" Text="Winner" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultCategoryHeaderText" Grid.Column="5" Text="Category" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultWeightHeaderText" Grid.Column="6" Text="Weight" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultMethodHeaderText" Grid.Column="7" Text="Method" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="ResultRoundHeaderText" Grid.Column="8" Text="Round" FontWeight="Bold" Foreground="White"/>
+                </Grid>
+            </Border>
+
+            <ListBox Grid.Row="1"
+                     x:Name="ResultsList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10"
+                                BorderBrush="#2A2A2A"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="80,70,150,150,150,120,120,100,*"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding DayNumber}" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding BoutNo}" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="{Binding RedName}"/>
+                                <TextBlock Grid.Column="3" Text="{Binding BlueName}"/>
+                                <TextBlock Grid.Column="4" Text="{Binding WinnerName}" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="5" Text="{Binding Category}"/>
+                                <TextBlock Grid.Column="6" Text="{Binding WeightClass}"/>
+                                <TextBlock Grid.Column="7" Text="{Binding Method}"/>
+                                <TextBlock Grid.Column="8" Text="{Binding Round}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </Grid>
+
+    </Border>
+
+</Grid>
+</Grid>
+
+</Window>

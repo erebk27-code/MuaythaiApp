@@ -1,0 +1,184 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.FightersWindow"
+    Width="1200"
+    Height="720"
+    Background="White"
+    Title="Fighters">
+
+<Grid>
+<Grid IsHitTestVisible="False"
+      Opacity="0.06"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+    <Image Source="avares://MuaythaiApp/PZMT.png"
+           Width="320"
+           Height="320"
+           Stretch="Uniform"/>
+</Grid>
+
+<Grid Margin="12" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="12">
+
+<TextBlock Grid.Row="0"
+           Text="Fighter Registration"
+           FontSize="22"
+           FontWeight="Bold"/>
+
+<Grid Grid.Row="1"
+      ColumnDefinitions="*,*,*,*,*,*"
+      ColumnSpacing="10"
+      RowDefinitions="Auto,Auto,Auto">
+
+    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+        <TextBlock Text="First Name"/>
+        <TextBox x:Name="FirstNameBox" Watermark="First name"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+        <TextBlock Text="Last Name"/>
+        <TextBox x:Name="LastNameBox" Watermark="Last name"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4">
+        <TextBlock Text="Club"/>
+        <ComboBox x:Name="ClubCombo"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="0" Grid.Column="3" Spacing="4">
+        <TextBlock Text="Birth Year"/>
+        <TextBox x:Name="BirthYearBox"
+                 Watermark="YYYY"
+                 TextChanged="BirthYearChanged"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="0" Grid.Column="4" Spacing="4">
+        <TextBlock Text="Age"/>
+        <TextBox x:Name="AgeBox"
+                 IsReadOnly="True"
+                 Watermark="Auto"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="0" Grid.Column="5" Spacing="4">
+        <TextBlock Text="Weight"/>
+        <TextBox x:Name="WeightBox"
+                 Watermark="kg"
+                 TextChanged="WeightChanged"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+        <TextBlock Text="Gender"/>
+        <ComboBox x:Name="GenderCombo"
+                  SelectionChanged="GenderChanged"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+        <TextBlock Text="Category"/>
+        <TextBox x:Name="CategoryBox"
+                 IsReadOnly="True"
+                 Watermark="Auto"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4">
+        <TextBlock Text="Weight Class"/>
+        <TextBox x:Name="WeightClassBox"
+                 IsReadOnly="True"
+                 Watermark="Auto"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom">
+        <Button Content="Add Fighter"
+                Click="AddClick"/>
+        <Button Content="Update Fighter"
+                Click="UpdateClick"/>
+        <Button Content="Delete Fighter"
+                Click="DeleteClick"/>
+        <Button Content="Clear Form"
+                Click="ClearClick"/>
+        <TextBlock x:Name="FormStatusText"
+                   VerticalAlignment="Center"/>
+    </StackPanel>
+
+    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" Spacing="10">
+        <StackPanel Spacing="4">
+            <TextBlock Text="Search Fighter"/>
+            <TextBox x:Name="SearchBox"
+                     Width="260"
+                     Watermark="Name or club"
+                     TextChanged="SearchChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Sort By"/>
+            <ComboBox x:Name="SortCombo"
+                      Width="180"
+                      SelectionChanged="SortChanged"/>
+        </StackPanel>
+
+        <TextBlock x:Name="ListInfoText"
+                   VerticalAlignment="Bottom"/>
+    </StackPanel>
+
+</Grid>
+
+<Border Grid.Row="3"
+        BorderBrush="#444"
+        BorderThickness="1"
+        CornerRadius="8"
+        Padding="8">
+
+    <Grid RowDefinitions="Auto,*" RowSpacing="6">
+
+        <Border Grid.Row="0"
+                Background="#1F1F1F"
+                Padding="10"
+                CornerRadius="6">
+            <Grid ColumnDefinitions="50,130,130,150,90,60,80,80,100,*"
+                  ColumnSpacing="10">
+                <TextBlock Grid.Column="0" Text="Id" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="2" Text="Surname" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="3" Text="Club" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="4" Text="Birth Year" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="5" Text="Age" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="6" Text="Weight" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="7" Text="Gender" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="8" Text="Category" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Grid.Column="9" Text="Weight Class" FontWeight="Bold" Foreground="White"/>
+            </Grid>
+        </Border>
+
+        <ListBox Grid.Row="1"
+                 x:Name="FightersGrid"
+                 SelectionChanged="FighterSelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="10"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="0,0,0,1">
+                        <Grid ColumnDefinitions="50,130,130,150,90,60,80,80,100,*"
+                              ColumnSpacing="10">
+                            <TextBlock Grid.Column="0" Text="{Binding Id}" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="1" Text="{Binding FirstName}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding LastName}"/>
+                            <TextBlock Grid.Column="3" Text="{Binding ClubName}"/>
+                            <TextBlock Grid.Column="4" Text="{Binding BirthYear}"/>
+                            <TextBlock Grid.Column="5" Text="{Binding Age}"/>
+                            <TextBlock Grid.Column="6" Text="{Binding Weight}"/>
+                            <TextBlock Grid.Column="7" Text="{Binding Gender}"/>
+                            <TextBlock Grid.Column="8" Text="{Binding AgeCategory}"/>
+                            <TextBlock Grid.Column="9" Text="{Binding WeightClassDisplay}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </Grid>
+
+</Border>
+
+</Grid>
+</Grid>
+
+</Window>

@@ -1,0 +1,106 @@
+name: Windows Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (example: 1.0.1)"
+        required: true
+        type: string
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    env:
+      APP_NAME: MuaythaiApp
+      APP_ID: com.muaythai.desktop
+      APP_RUNTIME: win-x64
+      VELOPACK_VERSION: 0.0.1298
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $version = "${{ inputs.version }}"
+          } else {
+            $version = "${{ github.ref_name }}"
+            if ($version.StartsWith("v")) {
+              $version = $version.Substring(1)
+            }
+          }
+
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw "Version could not be resolved."
+          }
+
+          "value=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Create update source file
+        shell: pwsh
+        run: |
+          "https://github.com/${{ github.repository }}" | Set-Content -Path "update-repo-url.txt" -NoNewline
+
+      - name: Publish Windows app
+        shell: pwsh
+        run: |
+          dotnet publish ".\MuaythaiApp.csproj" `
+            -c Release `
+            -r $env:APP_RUNTIME `
+            --self-contained true `
+            -p:Version=${{ steps.version.outputs.value }}
+
+      - name: Bundle update source into publish folder
+        shell: pwsh
+        run: |
+          Copy-Item ".\update-repo-url.txt" ".\bin\Release\net8.0\$env:APP_RUNTIME\publish\update-repo-url.txt" -Force
+
+      - name: Package Velopack release
+        shell: pwsh
+        run: |
+          $releasesDir = ".\Releases\$env:APP_RUNTIME"
+          New-Item -ItemType Directory -Path $releasesDir -Force | Out-Null
+
+          dnx "vpk@$env:VELOPACK_VERSION" --yes --allow-roll-forward pack `
+            --channel win `
+            --packId $env:APP_ID `
+            --packVersion "${{ steps.version.outputs.value }}" `
+            --runtime $env:APP_RUNTIME `
+            --packDir ".\bin\Release\net8.0\$env:APP_RUNTIME\publish" `
+            --mainExe "$env:APP_NAME.exe" `
+            --packTitle $env:APP_NAME `
+            --outputDir $releasesDir
+
+      - name: Upload Velopack release to GitHub Releases
+        shell: pwsh
+        run: |
+          dnx "vpk@$env:VELOPACK_VERSION" --yes --allow-roll-forward upload github `
+            --outputDir ".\Releases\$env:APP_RUNTIME" `
+            --repoUrl "https://github.com/${{ github.repository }}" `
+            --token "${{ secrets.GITHUB_TOKEN }}" `
+            --publish
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-${{ steps.version.outputs.value }}
+          path: |
+            Releases/${{ env.APP_RUNTIME }}/
+            bin/Release/net8.0/${{ env.APP_RUNTIME }}/publish/

@@ -1,0 +1,83 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.DatabaseSettingsWindow"
+    Width="680"
+    Height="500"
+    Background="White"
+    Title="Database Sync">
+
+    <Grid Margin="18" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto" RowSpacing="12">
+        <TextBlock x:Name="TitleText"
+                   Text="Database Sync"
+                   FontSize="22"
+                   FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="1" Spacing="6">
+            <TextBlock x:Name="HintText"
+                       TextWrapping="Wrap"
+                       Text="Use the same shared network database file path on both computers."/>
+            <TextBlock x:Name="CurrentPathText"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Spacing="4">
+            <TextBlock x:Name="ApiLabelText"
+                       Text="Server API address"/>
+            <TextBox x:Name="ApiUrlBox"
+                     Watermark="http://209.38.240.93"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Spacing="4">
+            <TextBlock x:Name="PathLabelText"
+                       Text="Shared database path"/>
+            <TextBox x:Name="DatabasePathBox"
+                     Watermark="\\SERVER\Folder\muaythai.db"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Spacing="4">
+            <TextBlock x:Name="UpdateRepoLabelText"
+                       Text="Auto update GitHub repository"/>
+            <TextBox x:Name="UpdateRepoUrlBox"
+                     Watermark="https://github.com/your-name/your-repo"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button x:Name="SaveUpdateRepoButton"
+                        Content="Save Update Source"
+                        Click="SaveUpdateRepoClick"/>
+                <Button x:Name="ClearUpdateRepoButton"
+                        Content="Clear Update Source"
+                        Click="ClearUpdateRepoClick"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="5"
+                Background="#F6F6F6"
+                CornerRadius="8"
+                Padding="12">
+            <TextBlock x:Name="InfoText"
+                       TextWrapping="Wrap"
+                       Text="Leave the field empty to use this computer's local database."/>
+        </Border>
+
+        <StackPanel Grid.Row="6"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Spacing="10">
+            <Button x:Name="SaveButton"
+                    Content="Use Remote API"
+                    Click="SaveRemoteApiClick"/>
+            <Button x:Name="SaveDatabaseButton"
+                    Content="Save Database Path"
+                    Click="SaveDatabasePathClick"/>
+            <Button x:Name="UseLocalButton"
+                    Content="Use Local Database"
+                    Click="UseLocalClick"/>
+            <Button x:Name="CancelButton"
+                    Content="Cancel"
+                    Click="CancelClick"/>
+            <TextBlock x:Name="StatusText"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</Window>

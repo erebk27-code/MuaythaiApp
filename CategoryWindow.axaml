@@ -1,0 +1,99 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.CategoryWindow"
+    Width="900"
+    Height="600"
+    Background="White"
+    Title="Category Management">
+
+<Grid>
+<Grid IsHitTestVisible="False"
+      Opacity="0.06"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+    <Image Source="avares://MuaythaiApp/PZMT.png"
+           Width="300"
+           Height="300"
+           Stretch="Uniform"/>
+</Grid>
+
+<Grid RowDefinitions="Auto,Auto,*" Margin="12" RowSpacing="12">
+
+    <TextBlock
+        Grid.Row="0"
+        Text="Category Management"
+        FontSize="22"
+        FontWeight="Bold"/>
+
+    <StackPanel
+        Grid.Row="1"
+        Orientation="Horizontal"
+        Spacing="12">
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Division"/>
+            <ComboBox x:Name="DivisionCombo" Width="150" SelectionChanged="FilterChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Gender"/>
+            <ComboBox x:Name="GenderCombo" Width="150" SelectionChanged="FilterChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Info"/>
+            <TextBlock x:Name="SummaryText" VerticalAlignment="Center"/>
+        </StackPanel>
+
+    </StackPanel>
+
+    <Border
+        Grid.Row="2"
+        BorderBrush="#444"
+        BorderThickness="1"
+        CornerRadius="8"
+        Padding="8">
+
+        <Grid RowDefinitions="Auto,*" RowSpacing="6">
+
+            <Border Grid.Row="0"
+                    Background="#1F1F1F"
+                    Padding="10"
+                    CornerRadius="6">
+                <Grid ColumnDefinitions="110,90,80,170,90,80,*"
+                      ColumnSpacing="10">
+                    <TextBlock Grid.Column="0" Text="Division" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="1" Text="Gender" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="2" Text="Age" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="3" Text="Weight Range" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="4" Text="Rounds" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="5" Text="Break" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="6" Text="Weight Classes" FontWeight="Bold" Foreground="White"/>
+                </Grid>
+            </Border>
+
+            <ListBox Grid.Row="1" x:Name="CategoryList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="110,90,80,170,90,80,*" Margin="0,2">
+                            <TextBlock Grid.Column="0" Text="{Binding Division}" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Gender}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding AgeRange}"/>
+                            <TextBlock Grid.Column="3" Text="{Binding WeightRange}"/>
+                            <TextBlock Grid.Column="4" Text="{Binding RoundInfo}"/>
+                            <TextBlock Grid.Column="5" Text="{Binding BreakInfo}"/>
+                            <TextBlock Grid.Column="6" Text="{Binding WeightClassInfo}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        </Grid>
+
+    </Border>
+
+</Grid>
+</Grid>
+
+</Window>

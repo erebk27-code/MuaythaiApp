@@ -1,0 +1,23 @@
+# Build outputs
+bin/
+obj/
+Releases/
+
+# OS / editor files
+.DS_Store
+
+# Local app bundles and packaged outputs
+*.app/
+*.pkg
+*.msi
+*.nupkg
+
+# Local runtime/config data
+update-repo-url.txt
+muaythai.db
+*.db-shm
+*.db-wal
+
+# Logs and temp
+*.log
+*.tmp

@@ -1,0 +1,98 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.MainWindow"
+    Width="560"
+    Height="600"
+    WindowStartupLocation="CenterScreen"
+    ShowActivated="True"
+    Background="White"
+    Title="MuaythaiApp">
+
+    <Grid>
+        <Grid IsHitTestVisible="False"
+              Opacity="0.08"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <Image Source="avares://MuaythaiApp/PZMT.png"
+                   Width="220"
+                   Height="220"
+                   Stretch="Uniform"/>
+        </Grid>
+
+    <StackPanel Margin="20" Spacing="10">
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock x:Name="LanguageLabel"
+                       VerticalAlignment="Center"
+                       Text="Language"/>
+            <ComboBox x:Name="LanguageCombo"
+                      Width="140"
+                      SelectionChanged="LanguageChanged"/>
+        </StackPanel>
+
+        <TextBlock x:Name="SessionInfoText"
+                   FontWeight="SemiBold"/>
+
+        <TextBlock x:Name="AccessInfoText"
+                   Foreground="#555555"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock x:Name="DatabasePathText"
+                   Foreground="#555555"
+                   TextWrapping="Wrap"/>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button x:Name="DatabaseSettingsButton"
+                    Content="Database Sync"
+                    Click="DatabaseSettingsClick"/>
+            <Button x:Name="ChangePasswordsButton"
+                    Content="Change Passwords"
+                    Click="ChangePasswordsClick"/>
+            <Button x:Name="LogoutButton"
+                    Content="Logout"
+                    Click="LogoutClick"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button x:Name="CheckUpdatesButton"
+                    Content="Check for Updates"
+                    Click="CheckUpdatesClick"/>
+            <TextBlock x:Name="UpdateStatusText"
+                       VerticalAlignment="Center"
+                       Foreground="#555555"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <Button x:Name="FightersButton"
+                Content="Fighters"
+                Click="FightersClick"/>
+
+        <Button x:Name="ClubsButton"
+                Content="Clubs"
+                Click="ClubsClick"/>
+
+        <Button x:Name="CategoriesButton"
+                Content="Categories"
+                Click="CategoriesClick"/>
+
+        <Button x:Name="MatchesButton"
+                Content="Matches"
+                Click="MatchesClick"/>
+
+        <Button x:Name="FightResultsButton"
+                Content="Fight Results"
+                Click="FightResultsClick"/>
+
+        <Button x:Name="MedalTableButton"
+                Content="Medal Table"
+                Click="MedalTableClick"/>
+
+        <Button x:Name="ReportsButton"
+                Content="Reports"
+                Click="ReportsClick"/>
+
+    </StackPanel>
+    </Grid>
+
+</Window>

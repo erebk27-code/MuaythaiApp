@@ -1,0 +1,82 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.LoginWindow"
+    Width="430"
+    Height="390"
+    CanResize="False"
+    WindowStartupLocation="CenterScreen"
+    ShowActivated="True"
+    Background="White"
+    Title="Login">
+
+    <Grid>
+        <Grid IsHitTestVisible="False"
+              Opacity="0.08"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <Image Source="avares://MuaythaiApp/PZMT.png"
+                   Width="220"
+                   Height="220"
+                   Stretch="Uniform"/>
+        </Grid>
+
+        <Border Margin="24"
+                Padding="20"
+                CornerRadius="16"
+                Background="#F8F8F8"
+                BorderBrush="#D6D6D6"
+                BorderThickness="1">
+            <StackPanel Spacing="12">
+                <TextBlock Text="MuaythaiApp Login"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Choose access type and enter the password."
+                           Foreground="#555555"
+                           TextWrapping="Wrap"/>
+
+                <Border Background="#EAF3FF"
+                        BorderBrush="#9FC2F2"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="10">
+                    <TextBlock x:Name="ConnectionModeText"
+                               Foreground="#1D4F91"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Access Type"/>
+                    <ComboBox x:Name="RoleCombo"
+                              SelectionChanged="RoleChanged"/>
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Password"/>
+                    <TextBox x:Name="PasswordBox"
+                             PasswordChar="*"/>
+                </StackPanel>
+
+                <Border Background="#FFF6D8"
+                        BorderBrush="#E3C25D"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="10">
+                    <TextBlock x:Name="DefaultPasswordText"
+                               Foreground="#6B5400"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+                <Button Content="Login"
+                        x:Name="LoginButton"
+                        HorizontalAlignment="Stretch"
+                        Click="LoginClick"/>
+
+                <TextBlock x:Name="StatusText"
+                           Foreground="#B00020"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

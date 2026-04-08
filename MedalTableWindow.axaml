@@ -1,0 +1,140 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.MedalTableWindow"
+    Width="1100"
+    Height="700"
+    Background="White"
+    Title="Medal Table">
+
+<Grid>
+<Grid IsHitTestVisible="False"
+      Opacity="0.06"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center">
+    <Image Source="avares://MuaythaiApp/PZMT.png"
+           Width="320"
+           Height="320"
+           Stretch="Uniform"/>
+</Grid>
+
+<Grid Margin="12" RowDefinitions="Auto,Auto,Auto,*,*" RowSpacing="12">
+
+    <TextBlock Grid.Row="0"
+               x:Name="MedalTableTitleText"
+               Text="Medal Table"
+               FontSize="22"
+               FontWeight="Bold"/>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="10">
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="MedalCategoryLabelText" Text="Category"/>
+            <ComboBox x:Name="CategoryFilterCombo"
+                      Width="220"
+                      SelectionChanged="FilterChanged"/>
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock x:Name="MedalClubLabelText" Text="Club"/>
+            <ComboBox x:Name="ClubFilterCombo"
+                      Width="220"
+                      SelectionChanged="FilterChanged"/>
+        </StackPanel>
+    </StackPanel>
+
+    <TextBlock Grid.Row="2"
+               x:Name="SummaryText"
+               Foreground="#444"/>
+
+    <Border Grid.Row="3"
+            BorderBrush="#444"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="8">
+        <Grid RowDefinitions="Auto,*" RowSpacing="6">
+            <Border Grid.Row="0"
+                    Background="#1F1F1F"
+                    Padding="10"
+                    CornerRadius="6">
+                <Grid ColumnDefinitions="*,100,100,100,100"
+                      ColumnSpacing="10">
+                    <TextBlock x:Name="StandingsClubHeaderText" Grid.Column="0" Text="Club" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="GoldHeaderText" Grid.Column="1" Text="Gold" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="SilverHeaderText" Grid.Column="2" Text="Silver" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="BronzeHeaderText" Grid.Column="3" Text="Bronze" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="MedalTotalHeaderText" Grid.Column="4" Text="Total" FontWeight="Bold" Foreground="White"/>
+                </Grid>
+            </Border>
+
+            <ListBox Grid.Row="1"
+                     x:Name="StandingsList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10"
+                                BorderBrush="#2A2A2A"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="*,100,100,100,100"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding ClubName}" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Gold}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Silver}"/>
+                                <TextBlock Grid.Column="3" Text="{Binding Bronze}"/>
+                                <TextBlock Grid.Column="4" Text="{Binding Total}" FontWeight="Bold"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+    <Border Grid.Row="4"
+            BorderBrush="#444"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="8">
+        <Grid RowDefinitions="Auto,*" RowSpacing="6">
+            <Border Grid.Row="0"
+                    Background="#1F1F1F"
+                    Padding="10"
+                    CornerRadius="6">
+                <Grid ColumnDefinitions="110,180,180,140,140,*"
+                      ColumnSpacing="10">
+                    <TextBlock x:Name="MedalHeaderText" Grid.Column="0" Text="Medal" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="FighterHeaderText" Grid.Column="1" Text="Fighter" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="AwardClubHeaderText" Grid.Column="2" Text="Club" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="AwardCategoryHeaderText" Grid.Column="3" Text="Category" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="AwardWeightHeaderText" Grid.Column="4" Text="Weight" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="AwardGenderHeaderText" Grid.Column="5" Text="Gender" FontWeight="Bold" Foreground="White"/>
+                </Grid>
+            </Border>
+
+            <ListBox Grid.Row="1"
+                     x:Name="AwardsList">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="10"
+                                BorderBrush="#2A2A2A"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="110,180,180,140,140,*"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding Medal}" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding FighterName}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding ClubName}"/>
+                                <TextBlock Grid.Column="3" Text="{Binding Category}"/>
+                                <TextBlock Grid.Column="4" Text="{Binding WeightClass}"/>
+                                <TextBlock Grid.Column="5" Text="{Binding Gender}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+</Grid>
+</Grid>
+
+</Window>
