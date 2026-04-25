@@ -8,6 +8,7 @@ public class Club
     public string? Coach { get; set; }
     public string? City { get; set; }
     public string? Country { get; set; }
+    public int AthleteCount { get; set; }
 
     public override string ToString()
     {

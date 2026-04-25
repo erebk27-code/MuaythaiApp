@@ -48,6 +48,7 @@ public partial class ScoreWindow : Window
 
     private void SetupCommonBehavior()
     {
+        LocalizationService.LocalizeControlTree(this);
         countdownTimer.Tick += CountdownTimerTick;
         AddHandler(KeyDownEvent, WindowKeyDown, RoutingStrategies.Tunnel);
         Closed += (_, __) => countdownTimer.Stop();
@@ -117,6 +118,7 @@ public partial class ScoreWindow : Window
 
         using var connection = DatabaseHelper.CreateConnection();
         connection.Open();
+        var championshipId = ChampionshipSettingsService.GetOrCreateActiveChampionshipId();
 
         var command = connection.CreateCommand();
         command.CommandText =
@@ -340,57 +342,75 @@ public partial class ScoreWindow : Window
         if (CurrentMatch == null)
             return;
 
-        using var connection = DatabaseHelper.CreateConnection();
-        connection.Open();
+        Match? nextMatch = null;
 
-        var command = connection.CreateCommand();
-        command.CommandText =
-        @"
-        SELECT
-            Id,
-            OrderNo,
-            Fighter1Name,
-            Fighter2Name,
-            AgeCategory,
-            WeightCategory,
-            Gender,
-            JudgesCount,
-            DayNumber
-        FROM Matches
-        WHERE DayNumber = @dayNumber
-          AND
-          (
-              OrderNo > @orderNo
-              OR (OrderNo = @orderNo AND Id > @id)
-          )
-        ORDER BY OrderNo, Id
-        LIMIT 1
-        ";
-        command.Parameters.AddWithValue("@dayNumber", CurrentMatch.DayNumber <= 0 ? 1 : CurrentMatch.DayNumber);
-        command.Parameters.AddWithValue("@orderNo", CurrentMatch.OrderNo);
-        command.Parameters.AddWithValue("@id", CurrentMatch.Id);
+        try
+        {
+            using var connection = DatabaseHelper.CreateConnection();
+            connection.Open();
+            var championshipId = ChampionshipSettingsService.GetOrCreateActiveChampionshipId();
 
-        using var reader = command.ExecuteReader();
+            var command = connection.CreateCommand();
+            command.CommandText =
+            @"
+            SELECT
+                Id,
+                OrderNo,
+                Fighter1Name,
+                Fighter2Name,
+                AgeCategory,
+                WeightCategory,
+                Gender,
+                JudgesCount,
+                DayNumber
+            FROM Matches
+            WHERE ChampionshipId = @championshipId
+              AND DayNumber = @dayNumber
+              AND
+              (
+                  OrderNo > @orderNo
+                  OR (OrderNo = @orderNo AND Id > @id)
+              )
+            ORDER BY OrderNo, Id
+            LIMIT 1
+            ";
+            command.Parameters.AddWithValue("@championshipId", championshipId);
+            command.Parameters.AddWithValue("@dayNumber", CurrentMatch.DayNumber <= 0 ? 1 : CurrentMatch.DayNumber);
+            command.Parameters.AddWithValue("@orderNo", CurrentMatch.OrderNo);
+            command.Parameters.AddWithValue("@id", CurrentMatch.Id);
 
-        if (!reader.Read())
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                nextMatch = new Match
+                {
+                    Id = reader.GetInt32(0),
+                    OrderNo = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
+                    Fighter1Name = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                    Fighter2Name = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                    AgeCategory = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                    WeightCategory = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
+                    Gender = reader.IsDBNull(6) ? string.Empty : reader.GetString(6),
+                    JudgesCount = reader.IsDBNull(7) ? 0 : reader.GetInt32(7),
+                    DayNumber = reader.IsDBNull(8) ? 1 : reader.GetInt32(8)
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            WinnerText.Text = $"Next fight could not be loaded: {ex.Message}";
+            StartupLogger.Log(ex, "ScoreWindow.NextFightClick failed");
+            return;
+        }
+
+        if (nextMatch == null)
         {
             WinnerText.Text = "No next fight in this day.";
             return;
         }
 
-        CurrentMatch = new Match
-        {
-            Id = reader.GetInt32(0),
-            OrderNo = reader.IsDBNull(1) ? 0 : reader.GetInt32(1),
-            Fighter1Name = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-            Fighter2Name = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-            AgeCategory = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-            WeightCategory = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
-            Gender = reader.IsDBNull(6) ? string.Empty : reader.GetString(6),
-            JudgesCount = reader.IsDBNull(7) ? 0 : reader.GetInt32(7),
-            DayNumber = reader.IsDBNull(8) ? 1 : reader.GetInt32(8)
-        };
-
+        CurrentMatch = nextMatch;
         SetupWindow(resetSelections: true);
         WinnerText.Text = $"Loaded next fight: Bout {CurrentMatch.OrderNo}.";
     }

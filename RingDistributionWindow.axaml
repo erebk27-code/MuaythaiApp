@@ -1,0 +1,41 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.RingDistributionWindow"
+    Width="420"
+    Height="360"
+    Background="White"
+    Title="Distribute Rings">
+
+<Grid Margin="14"
+      RowDefinitions="Auto,Auto,*,Auto"
+      RowSpacing="12">
+
+    <TextBlock x:Name="TitleText"
+               Grid.Row="0"
+               Text="Distribute matches to rings"
+               FontSize="18"
+               FontWeight="Bold"/>
+
+    <TextBlock x:Name="InfoText"
+               Grid.Row="1"
+               TextWrapping="Wrap"
+               Foreground="#444"/>
+
+    <ScrollViewer Grid.Row="2">
+        <StackPanel x:Name="RingPanel"
+                    Spacing="8"/>
+    </ScrollViewer>
+
+    <StackPanel Grid.Row="3"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+        <Button Content="Cancel"
+                Click="CancelClick"/>
+        <Button Content="Apply"
+                Click="ApplyClick"/>
+    </StackPanel>
+
+</Grid>
+</Window>

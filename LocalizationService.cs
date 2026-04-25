@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.LogicalTree;
 
 namespace MuaythaiApp;
 
@@ -17,6 +21,7 @@ public static class LocalizationService
         ["English"] = "English",
         ["Polish"] = "Polish",
         ["MainTitle"] = "MuaythaiApp",
+        ["Definitions"] = "Definitions",
         ["Fighters"] = "Fighters",
         ["Clubs"] = "Clubs",
         ["Categories"] = "Categories",
@@ -26,6 +31,44 @@ public static class LocalizationService
         ["Reports"] = "Reports",
         ["ChangePasswords"] = "Change Passwords",
         ["DatabaseSync"] = "Database Sync",
+        ["ChampionshipDefinitions"] = "Championship Definitions",
+        ["ChampionshipSetup"] = "Championship Definitions",
+        ["ChampionshipInformation"] = "Championship Information",
+        ["ChampionshipRingInformation"] = "Championship Ring Information",
+        ["ChampionshipCategoryInformation"] = "Championship Category Information",
+        ["ChampionshipProcess"] = "Championship Process",
+        ["RingInformation"] = "Ring Information",
+        ["CategoryInformation"] = "Category Information",
+        ["ClubInformation"] = "Club Information",
+        ["AthleteInformation"] = "Athlete Information",
+        ["AthleteControl"] = "Athlete Control",
+        ["ChampionshipInformationEntry"] = "Championship Information Entry",
+        ["ChampionshipRingInformationEntry"] = "Championship Ring Information Entry",
+        ["ChampionshipCategoryEntry"] = "Championship Category Entry",
+        ["AthleteScale"] = "Athlete Scale",
+        ["GenderControl"] = "Gender Control",
+        ["ScaleControl"] = "Scale Control",
+        ["ApplyControls"] = "Apply Controls",
+        ["AthleteScaleAndList"] = "Athlete List and Scale",
+        ["DocumentControl"] = "Document Control",
+        ["EligibilityStatus"] = "Eligibility Status",
+        ["MedicalFitness"] = "Medical fitness",
+        ["HighRiskInsurance"] = "NNW high-risk insurance",
+        ["RegistrationForm"] = "Entry form original",
+        ["GuardianConsent"] = "Parent or guardian consent",
+        ["SeniorGuardianConsent"] = "Consent for Senior category",
+        ["AmateurLicense2026"] = "Amateur license 2026",
+        ["PolishCitizenship"] = "Polish citizenship",
+        ["GenderVerified"] = "Gender confirmed",
+        ["SelectAllDocuments"] = "Select all",
+        ["ChampionshipName"] = "Championship Name",
+        ["Address"] = "Address",
+        ["StartDate"] = "Start Date",
+        ["EndDate"] = "End Date",
+        ["Rings"] = "Rings",
+        ["ActiveCategoriesAndWeights"] = "Active Categories and Weights",
+        ["SelectAllCategories"] = "Select All Categories",
+        ["ClearSelection"] = "Clear Selection",
         ["CurrentDatabase"] = "Current database",
         ["SharedDatabasePath"] = "Shared database path",
         ["DatabaseSyncHint"] = "Use the same shared network database file path on both computers to see the same tournament data.",
@@ -84,6 +127,7 @@ public static class LocalizationService
         ["Break"] = "Break",
         ["WeightClasses"] = "Weight Classes",
         ["Day"] = "Day",
+        ["Ring"] = "Ring",
         ["Judges"] = "Judges",
         ["AutoMatchMaker"] = "Auto Match Maker",
         ["Score"] = "Score",
@@ -126,7 +170,53 @@ public static class LocalizationService
         ["Silver"] = "Silver",
         ["Bronze"] = "Bronze",
         ["Medal"] = "Medal",
-        ["Fighter"] = "Fighter"
+        ["Fighter"] = "Fighter",
+        ["Date"] = "Date",
+        ["DistributeRings"] = "Distribute Rings",
+        ["DistributeMatchesToRings"] = "Distribute matches to rings",
+        ["DistributeDayMatches"] = "Distribute Day {0} matches",
+        ["RingDistributionHint"] = "Enter how many matches each ring should receive. Remaining matches go to the last ring with a count.",
+        ["RingCountInvalid"] = "{0}: enter 0 or a positive number.",
+        ["Apply"] = "Apply",
+        ["CheckForUpdates"] = "Check for Updates",
+        ["SaveActiveCategories"] = "Save Active Categories",
+        ["Active"] = "Active",
+        ["AgeCategory"] = "Age Category",
+        ["AgeRange"] = "Age Range",
+        ["Sort"] = "Sort",
+        ["ClubDetails"] = "Club Details",
+        ["CoachName"] = "Coach Name",
+        ["ClubCity"] = "Club City",
+        ["AthleteCount"] = "Athlete Count",
+        ["Athletes"] = "Athletes",
+        ["ClubAthleteList"] = "Club Athlete List",
+        ["SelectClubToSeeAthleteDetails"] = "Select a club to see athlete details.",
+        ["Athlete"] = "Athlete",
+        ["Officials"] = "Officials",
+        ["Timing"] = "Timing",
+        ["Referee"] = "Referee",
+        ["Password"] = "Password",
+        ["Login"] = "Login",
+        ["AccessType"] = "Access Type",
+        ["MuaythaiAppLogin"] = "MuaythaiApp Login",
+        ["LoginHint"] = "Choose access type and enter the password.",
+        ["SavePasswords"] = "Save Passwords",
+        ["CurrentAdministratorPassword"] = "Current Administrator Password",
+        ["NewAdministratorPassword"] = "New Administrator Password",
+        ["ConfirmAdministratorPassword"] = "Confirm Administrator Password",
+        ["NewUserPassword"] = "New User Password",
+        ["ConfirmUserPassword"] = "Confirm User Password",
+        ["PasswordChangeHint"] = "Leave any new password empty if you do not want to change it.",
+        ["ServerApiAddress"] = "Server API address",
+        ["AutoUpdateGithubRepository"] = "Auto update GitHub repository",
+        ["SaveUpdateSource"] = "Save Update Source",
+        ["ClearUpdateSource"] = "Clear Update Source",
+        ["UseRemoteApi"] = "Use Remote API",
+        ["SaveDatabasePath"] = "Save Database Path",
+        ["NameOrClub"] = "Name or club",
+        ["ClubCoachCityOrCountry"] = "Club, coach, city or country",
+        ["WinnerRedBlueOrCategory"] = "Winner, red, blue or category",
+        ["Auto"] = "Auto"
     };
 
     private static readonly Dictionary<string, string> Polish = new()
@@ -135,6 +225,7 @@ public static class LocalizationService
         ["English"] = "Angielski",
         ["Polish"] = "Polski",
         ["MainTitle"] = "MuaythaiApp",
+        ["Definitions"] = "Definicje",
         ["Fighters"] = "Zawodnicy",
         ["Clubs"] = "Kluby",
         ["Categories"] = "Kategorie",
@@ -144,6 +235,44 @@ public static class LocalizationService
         ["Reports"] = "Raporty",
         ["ChangePasswords"] = "Zmien Hasla",
         ["DatabaseSync"] = "Synchronizacja Bazy",
+        ["ChampionshipDefinitions"] = "Definicje Mistrzostw",
+        ["ChampionshipSetup"] = "Definicje Mistrzostw",
+        ["ChampionshipInformation"] = "Informacje o Mistrzostwach",
+        ["ChampionshipRingInformation"] = "Informacje o Ringach",
+        ["ChampionshipCategoryInformation"] = "Informacje o Kategoriach",
+        ["ChampionshipProcess"] = "Proces Mistrzostw",
+        ["RingInformation"] = "Informacje o ringu",
+        ["CategoryInformation"] = "Informacje o kategorii",
+        ["ClubInformation"] = "Informacje o klubie",
+        ["AthleteInformation"] = "Informacje o zawodniku",
+        ["AthleteControl"] = "Kontrola zawodnika",
+        ["ChampionshipInformationEntry"] = "Wpis Informacji o Mistrzostwach",
+        ["ChampionshipRingInformationEntry"] = "Wpis Informacji o Ringach",
+        ["ChampionshipCategoryEntry"] = "Wpis Kategorii Mistrzostw",
+        ["AthleteScale"] = "Wazenie Zawodnikow",
+        ["GenderControl"] = "Kontrola Plci",
+        ["ScaleControl"] = "Kontrola Wagi",
+        ["ApplyControls"] = "Zastosuj Kontrole",
+        ["AthleteScaleAndList"] = "Lista zawodnikow i wazenie",
+        ["DocumentControl"] = "Kontrola dokumentow",
+        ["EligibilityStatus"] = "Status dopuszczenia",
+        ["MedicalFitness"] = "Ksiazeczka lub zaswiadczenie sportowe",
+        ["HighRiskInsurance"] = "Ubezpieczenie NNW wysokiego ryzyka",
+        ["RegistrationForm"] = "Oryginal formularza zgloszeniowego",
+        ["GuardianConsent"] = "Zgoda rodzica lub opiekuna",
+        ["SeniorGuardianConsent"] = "Zgoda na start w kategorii Senior",
+        ["AmateurLicense2026"] = "Licencja amatorska 2026",
+        ["PolishCitizenship"] = "Obywatelstwo polskie",
+        ["GenderVerified"] = "Kontrola plci potwierdzona",
+        ["SelectAllDocuments"] = "Zaznacz wszystko",
+        ["ChampionshipName"] = "Nazwa Mistrzostw",
+        ["Address"] = "Adres",
+        ["StartDate"] = "Data Rozpoczecia",
+        ["EndDate"] = "Data Zakonczenia",
+        ["Rings"] = "Ringi",
+        ["ActiveCategoriesAndWeights"] = "Aktywne Kategorie i Wagi",
+        ["SelectAllCategories"] = "Zaznacz Wszystkie Kategorie",
+        ["ClearSelection"] = "Wyczysc Zaznaczenie",
         ["CurrentDatabase"] = "Aktualna baza",
         ["SharedDatabasePath"] = "Sciezka wspolnej bazy",
         ["DatabaseSyncHint"] = "Uzyj tej samej sciezki do wspolnego pliku bazy sieciowej na obu komputerach, aby widziec te same dane turnieju.",
@@ -202,6 +331,7 @@ public static class LocalizationService
         ["Break"] = "Przerwa",
         ["WeightClasses"] = "Klasy Wagowe",
         ["Day"] = "Dzien",
+        ["Ring"] = "Ring",
         ["Judges"] = "Sedziowie",
         ["AutoMatchMaker"] = "Automatyczne Losowanie",
         ["Score"] = "Punktacja",
@@ -244,8 +374,62 @@ public static class LocalizationService
         ["Silver"] = "Srebro",
         ["Bronze"] = "Braz",
         ["Medal"] = "Medal",
-        ["Fighter"] = "Zawodnik"
+        ["Fighter"] = "Zawodnik",
+        ["Date"] = "Data",
+        ["DistributeRings"] = "Rozdziel ringi",
+        ["DistributeMatchesToRings"] = "Rozdziel walki na ringi",
+        ["DistributeDayMatches"] = "Rozdziel walki dnia {0}",
+        ["RingDistributionHint"] = "Wpisz, ile walk ma otrzymac kazdy ring. Pozostale walki trafia do ostatniego ringu z podana liczba.",
+        ["RingCountInvalid"] = "{0}: wpisz 0 lub liczbe dodatnia.",
+        ["Apply"] = "Zastosuj",
+        ["CheckForUpdates"] = "Sprawdz aktualizacje",
+        ["SaveActiveCategories"] = "Zapisz aktywne kategorie",
+        ["Active"] = "Aktywne",
+        ["AgeCategory"] = "Kategoria wiekowa",
+        ["AgeRange"] = "Zakres wieku",
+        ["Sort"] = "Sortowanie",
+        ["ClubDetails"] = "Szczegoly klubu",
+        ["CoachName"] = "Imie trenera",
+        ["ClubCity"] = "Miasto klubu",
+        ["AthleteCount"] = "Liczba zawodnikow",
+        ["Athletes"] = "Zawodnicy",
+        ["ClubAthleteList"] = "Lista zawodnikow klubu",
+        ["SelectClubToSeeAthleteDetails"] = "Wybierz klub, aby zobaczyc szczegoly zawodnikow.",
+        ["Athlete"] = "Zawodnik",
+        ["Officials"] = "Sedziowie",
+        ["Timing"] = "Czas",
+        ["Referee"] = "Sedzia glowny",
+        ["Password"] = "Haslo",
+        ["Login"] = "Zaloguj",
+        ["AccessType"] = "Typ dostepu",
+        ["MuaythaiAppLogin"] = "Logowanie MuaythaiApp",
+        ["LoginHint"] = "Wybierz typ dostepu i wpisz haslo.",
+        ["SavePasswords"] = "Zapisz hasla",
+        ["CurrentAdministratorPassword"] = "Aktualne haslo administratora",
+        ["NewAdministratorPassword"] = "Nowe haslo administratora",
+        ["ConfirmAdministratorPassword"] = "Potwierdz haslo administratora",
+        ["NewUserPassword"] = "Nowe haslo uzytkownika",
+        ["ConfirmUserPassword"] = "Potwierdz haslo uzytkownika",
+        ["PasswordChangeHint"] = "Pozostaw nowe haslo puste, jesli nie chcesz go zmieniac.",
+        ["ServerApiAddress"] = "Adres API serwera",
+        ["AutoUpdateGithubRepository"] = "Repozytorium GitHub aktualizacji",
+        ["SaveUpdateSource"] = "Zapisz zrodlo aktualizacji",
+        ["ClearUpdateSource"] = "Wyczysc zrodlo aktualizacji",
+        ["UseRemoteApi"] = "Uzyj zdalnego API",
+        ["SaveDatabasePath"] = "Zapisz sciezke bazy",
+        ["NameOrClub"] = "Imie, nazwisko lub klub",
+        ["ClubCoachCityOrCountry"] = "Klub, trener, miasto lub kraj",
+        ["WinnerRedBlueOrCategory"] = "Zwyciezca, czerwony, niebieski lub kategoria",
+        ["Auto"] = "Automatycznie"
     };
+
+    private static readonly Dictionary<string, string> EnglishValueToKey = English
+        .GroupBy(x => x.Value, StringComparer.OrdinalIgnoreCase)
+        .ToDictionary(x => x.Key, x => x.First().Key, StringComparer.OrdinalIgnoreCase);
+
+    private static readonly Dictionary<string, string> PolishValueToKey = Polish
+        .GroupBy(x => x.Value, StringComparer.OrdinalIgnoreCase)
+        .ToDictionary(x => x.Key, x => x.First().Key, StringComparer.OrdinalIgnoreCase);
 
     public static event Action? LanguageChanged;
 
@@ -264,5 +448,56 @@ public static class LocalizationService
     {
         var source = CurrentLanguage == AppLanguage.Polish ? Polish : English;
         return source.TryGetValue(key, out var value) ? value : key;
+    }
+
+    public static string Format(string key, params object[] args)
+        => string.Format(T(key), args);
+
+    public static string TranslateText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        if (EnglishValueToKey.TryGetValue(text, out var key) ||
+            PolishValueToKey.TryGetValue(text, out key))
+            return T(key);
+
+        if ((text.StartsWith("Day ", StringComparison.OrdinalIgnoreCase) ||
+             text.StartsWith("Dzien ", StringComparison.OrdinalIgnoreCase)) &&
+            int.TryParse(text[(text.IndexOf(' ') + 1)..], out var dayNumber))
+            return $"{T("Day")} {dayNumber}";
+
+        if ((text.StartsWith("Round ", StringComparison.OrdinalIgnoreCase) ||
+             text.StartsWith("Runda ", StringComparison.OrdinalIgnoreCase)) &&
+            int.TryParse(text[(text.IndexOf(' ') + 1)..], out var roundNumber))
+            return $"{T("Round")} {roundNumber}";
+
+        if ((text.StartsWith("Judge ", StringComparison.OrdinalIgnoreCase) ||
+             text.StartsWith("Sedzia ", StringComparison.OrdinalIgnoreCase)) &&
+            int.TryParse(text[(text.IndexOf(' ') + 1)..], out var judgeNumber))
+            return $"{T("Judge")} {judgeNumber}";
+
+        return text;
+    }
+
+    public static void LocalizeControlTree(Control root)
+    {
+        if (root is Window window && !string.IsNullOrWhiteSpace(window.Title))
+            window.Title = TranslateText(window.Title);
+
+        if (root is TextBlock textBlock && !string.IsNullOrWhiteSpace(textBlock.Text))
+            textBlock.Text = TranslateText(textBlock.Text);
+
+        if (root is ContentControl contentControl && contentControl.Content is string content)
+            contentControl.Content = TranslateText(content);
+
+        if (root is HeaderedContentControl headeredContentControl && headeredContentControl.Header is string header)
+            headeredContentControl.Header = TranslateText(header);
+
+        if (root is TextBox textBox && !string.IsNullOrWhiteSpace(textBox.Watermark))
+            textBox.Watermark = TranslateText(textBox.Watermark);
+
+        foreach (var child in root.GetLogicalChildren().OfType<Control>())
+            LocalizeControlTree(child);
     }
 }

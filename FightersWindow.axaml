@@ -4,6 +4,7 @@
     x:Class="MuaythaiApp.FightersWindow"
     Width="1200"
     Height="720"
+    WindowStartupLocation="CenterScreen"
     Background="White"
     Title="Fighters">
 

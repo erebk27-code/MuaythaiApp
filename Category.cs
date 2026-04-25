@@ -14,13 +14,32 @@ public class Category
     public int RoundCount { get; set; }
     public int RoundDurationSeconds { get; set; }
     public int BreakDurationSeconds { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public string AgeRange => $"{AgeMin}-{AgeMax}";
+
+    public string DivisionDisplay => Division switch
+    {
+        "U12" => "U12 Dziecko mlodsze",
+        "U14" => "U14 Dziecko starsze",
+        "U16" => "U16 Kadet",
+        "U18" => "U18 Junior",
+        "U24" => "U24 Mlodziezowiec",
+        "Senior" => "Senior",
+        "Masters" => "Masters",
+        _ => Division
+    };
+
+    public string DivisionWithAgeDisplay => $"{DivisionDisplay} ({AgeRange})";
 
     public string WeightDisplay =>
         IsOpenWeight
             ? $"+{FormatWeight(WeightMax)} kg"
             : $"-{FormatWeight(WeightMax)} kg";
+
+    public string CategoryDisplay => string.IsNullOrWhiteSpace(CategoryName)
+        ? WeightDisplay
+        : CategoryName;
 
     public string FullName =>
         $"{Division} | {Gender} | {WeightDisplay}";

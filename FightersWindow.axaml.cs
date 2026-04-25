@@ -7,6 +7,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using MuaythaiApp.Database;
 
 namespace MuaythaiApp;
@@ -16,25 +17,27 @@ public partial class FightersWindow : Window
     private readonly List<Fighter> allFighters = new();
     private readonly List<Club> allClubs = new();
     private readonly List<Category> allCategories = new();
-    private readonly DatabaseAutoRefresh? databaseAutoRefresh;
+    private DatabaseAutoRefresh? databaseAutoRefresh;
     private Fighter? selectedFighter;
 
     public FightersWindow()
     {
         InitializeComponent();
+        StartupLogger.Log("FightersWindow constructor started");
 
         if (!AppSession.IsAdmin)
         {
+            StartupLogger.Log("FightersWindow closing because session is not admin");
             Opened += (_, __) => Close();
             return;
         }
 
-        LoadClubs();
         LoadGender();
-        LoadCategories();
         LoadSortOptions();
-        LoadFighters();
-        databaseAutoRefresh = new DatabaseAutoRefresh(this, ReloadDatabaseData);
+        LocalizationService.LocalizeControlTree(this);
+        Opened += async (_, __) => await LoadInitialDataAsync();
+        Opened += (_, __) => StartupLogger.Log("FightersWindow opened");
+        StartupLogger.Log("FightersWindow constructor completed");
     }
 
     private void ReloadDatabaseData()
@@ -42,6 +45,40 @@ public partial class FightersWindow : Window
         LoadClubs();
         LoadCategories();
         LoadFighters();
+    }
+
+    private async Task LoadInitialDataAsync()
+    {
+        StartupLogger.Log("FightersWindow.LoadInitialDataAsync started");
+        FormStatusText.Text = "Loading fighters...";
+
+        try
+        {
+            var result = await Task.Run(() => new FighterWindowLoadResult(
+                LoadClubsCore(),
+                LoadCategoriesCore(),
+                LoadFightersCore()));
+
+            allClubs.Clear();
+            allClubs.AddRange(result.Clubs);
+            ClubCombo.ItemsSource = null;
+            ClubCombo.ItemsSource = allClubs;
+
+            allCategories.Clear();
+            allCategories.AddRange(result.Categories);
+
+            allFighters.Clear();
+            allFighters.AddRange(result.Fighters);
+            ApplyFiltersAndSorting();
+            databaseAutoRefresh ??= new DatabaseAutoRefresh(this, ReloadDatabaseData);
+            FormStatusText.Text = string.Empty;
+            StartupLogger.Log($"FightersWindow.LoadInitialDataAsync completed with {result.Fighters.Count} fighters");
+        }
+        catch (Exception ex)
+        {
+            FormStatusText.Text = $"Fighters could not be loaded: {ex.Message}";
+            StartupLogger.Log(ex, "FightersWindow.LoadInitialDataAsync failed");
+        }
     }
 
     private void AddClick(object? sender, RoutedEventArgs e)
@@ -196,12 +233,18 @@ public partial class FightersWindow : Window
     private void LoadFighters()
     {
         allFighters.Clear();
+        allFighters.AddRange(LoadFightersCore());
+        ApplyFiltersAndSorting();
+    }
+
+    private List<Fighter> LoadFightersCore()
+    {
+        var fighters = new List<Fighter>();
 
         if (RemoteApiClient.IsEnabled)
         {
-            allFighters.AddRange(RemoteApiClient.GetFighters());
-            ApplyFiltersAndSorting();
-            return;
+            fighters.AddRange(RemoteApiClient.GetFighters());
+            return fighters;
         }
 
         using var c =
@@ -264,10 +307,10 @@ public partial class FightersWindow : Window
             f.Gender = r["Gender"]?.ToString() ?? "";
             f.ClubName = r["ClubName"]?.ToString() ?? "";
 
-            allFighters.Add(f);
+            fighters.Add(f);
         }
 
-        ApplyFiltersAndSorting();
+        return fighters;
     }
 
     private void LoadGender()
@@ -283,14 +326,20 @@ public partial class FightersWindow : Window
     private void LoadCategories()
     {
         allCategories.Clear();
+        allCategories.AddRange(LoadCategoriesCore());
+    }
+
+    private List<Category> LoadCategoriesCore()
+    {
+        var categories = new List<Category>();
 
         if (RemoteApiClient.IsEnabled)
         {
-            allCategories.AddRange(RemoteApiClient.GetCategories()
+            return ChampionshipSettingsService.FilterActiveCategories(RemoteApiClient.GetCategories())
                 .OrderBy(x => x.AgeMin)
                 .ThenBy(x => x.AgeMax)
-                .ThenBy(x => x.SortOrder));
-            return;
+                .ThenBy(x => x.SortOrder)
+                .ToList();
         }
 
         using var c = DatabaseHelper.CreateConnection();
@@ -320,7 +369,7 @@ public partial class FightersWindow : Window
 
         while (r.Read())
         {
-            allCategories.Add(new Category
+            categories.Add(new Category
             {
                 Id = r.GetInt32(0),
                 Division = r.GetString(1),
@@ -336,6 +385,12 @@ public partial class FightersWindow : Window
                 BreakDurationSeconds = r.GetInt32(11)
             });
         }
+
+        return ChampionshipSettingsService.FilterActiveCategories(categories)
+            .OrderBy(x => x.AgeMin)
+            .ThenBy(x => x.AgeMax)
+            .ThenBy(x => x.SortOrder)
+            .ToList();
     }
 
     private void LoadSortOptions()
@@ -343,10 +398,10 @@ public partial class FightersWindow : Window
         SortCombo.ItemsSource =
             new List<string>
             {
+                "Category",
                 "Name",
                 "Club",
                 "Gender",
-                "Category",
                 "Weight"
             };
 
@@ -356,13 +411,19 @@ public partial class FightersWindow : Window
     private void LoadClubs()
     {
         allClubs.Clear();
+        allClubs.AddRange(LoadClubsCore());
+        ClubCombo.ItemsSource = null;
+        ClubCombo.ItemsSource = allClubs;
+    }
+
+    private List<Club> LoadClubsCore()
+    {
+        var clubs = new List<Club>();
 
         if (RemoteApiClient.IsEnabled)
         {
-            allClubs.AddRange(RemoteApiClient.GetClubs().OrderBy(x => x.Name));
-            ClubCombo.ItemsSource = null;
-            ClubCombo.ItemsSource = allClubs;
-            return;
+            clubs.AddRange(RemoteApiClient.GetClubs().OrderBy(x => x.Name));
+            return clubs;
         }
 
         using var c =
@@ -377,15 +438,14 @@ public partial class FightersWindow : Window
 
         while (r.Read())
         {
-            allClubs.Add(new Club
+            clubs.Add(new Club
             {
                 Id = r.GetInt32(0),
                 Name = r.IsDBNull(1) ? string.Empty : r.GetString(1)
             });
         }
 
-        ClubCombo.ItemsSource = null;
-        ClubCombo.ItemsSource = allClubs;
+        return clubs;
     }
 
     private void BirthYearChanged(object? sender, TextChangedEventArgs e)
@@ -456,7 +516,14 @@ public partial class FightersWindow : Window
         {
             query = query.Where(x =>
                 x.FullName.ToLowerInvariant().Contains(searchText) ||
-                x.ClubName.ToLowerInvariant().Contains(searchText));
+                x.FirstName.ToLowerInvariant().Contains(searchText) ||
+                x.LastName.ToLowerInvariant().Contains(searchText) ||
+                x.ClubName.ToLowerInvariant().Contains(searchText) ||
+                x.Gender.ToLowerInvariant().Contains(searchText) ||
+                x.AgeCategory.ToLowerInvariant().Contains(searchText) ||
+                x.WeightCategory.ToLowerInvariant().Contains(searchText) ||
+                x.Weight.ToString("0.##", CultureInfo.InvariantCulture).Contains(searchText) ||
+                x.Id.ToString(CultureInfo.InvariantCulture).Contains(searchText));
         }
 
         query = (SortCombo.SelectedItem?.ToString() ?? "Name") switch
@@ -534,8 +601,17 @@ public partial class FightersWindow : Window
         formData.Age = age;
         formData.Weight = weight;
         formData.Gender = GenderCombo.SelectedItem?.ToString() ?? "";
-        formData.AgeCategory = CategoryBox.Text?.Trim() ?? string.Empty;
-        formData.WeightCategory = WeightClassBox.Text?.Trim() ?? string.Empty;
+
+        if (!TryResolveCategory(age, weight, formData.Gender, out var matchedCategory))
+        {
+            FormStatusText.Text = "Category and weight class could not be calculated.";
+            return false;
+        }
+
+        formData.AgeCategory = matchedCategory.Division;
+        formData.WeightCategory = matchedCategory.CategoryName;
+        CategoryBox.Text = formData.AgeCategory;
+        WeightClassBox.Text = formData.WeightCategory;
 
         if (string.IsNullOrWhiteSpace(formData.AgeCategory) ||
             string.IsNullOrWhiteSpace(formData.WeightCategory))
@@ -546,6 +622,11 @@ public partial class FightersWindow : Window
 
         return true;
     }
+
+    private sealed record FighterWindowLoadResult(
+        List<Club> Clubs,
+        List<Category> Categories,
+        List<Fighter> Fighters);
 
     private void FillCommonParameters(SqliteCommand cmd, FighterFormData formData)
     {
@@ -593,6 +674,20 @@ public partial class FightersWindow : Window
         if (string.IsNullOrWhiteSpace(selectedGender))
             return;
 
+        if (!TryResolveCategory(age, weight, selectedGender, out var matched))
+            return;
+
+        CategoryBox.Text = matched.Division;
+        WeightClassBox.Text = matched.CategoryName;
+    }
+
+    private bool TryResolveCategory(int age, double weight, string? selectedGender, out Category matchedCategory)
+    {
+        matchedCategory = null!;
+
+        if (string.IsNullOrWhiteSpace(selectedGender))
+            return false;
+
         var candidates = allCategories
             .Where(x =>
                 x.AgeMin <= age &&
@@ -601,22 +696,25 @@ public partial class FightersWindow : Window
             .ToList();
 
         if (candidates.Count == 0)
-            return;
+            return false;
 
         var divisionPriority = GetDivisionPriority(age);
 
         var matched = candidates
-            .Where(x => x.IsOpenWeight || weight <= x.WeightMax)
+            .Where(x => IsWeightAllowedInCategory(weight, x))
             .OrderBy(x => divisionPriority.IndexOf(x.Division))
             .ThenBy(x => x.SortOrder)
             .FirstOrDefault();
 
         if (matched == null)
-            return;
+            return false;
 
-        CategoryBox.Text = matched.Division;
-        WeightClassBox.Text = matched.CategoryName;
+        matchedCategory = matched;
+        return true;
     }
+
+    private static bool IsWeightAllowedInCategory(double weight, Category category)
+        => category.IsOpenWeight || weight <= category.WeightMax;
 
     private bool TryParseWeight(string? value, out double weight)
     {

@@ -10,18 +10,18 @@ public static class TournamentProgressionService
 {
     public static void RebuildNextDayFrom(int currentDay, int judgesCount)
     {
-        if (currentDay >= 4)
+        if (currentDay >= ChampionshipSettingsService.GetDayCount())
             return;
 
         using var connection = DatabaseHelper.CreateConnection();
         connection.Open();
+        var championshipId = ChampionshipSettingsService.GetOrCreateActiveChampionshipId();
 
-        DeleteMatchesFromDay(connection, currentDay + 1);
+        DeleteMatchesFromDay(connection, championshipId, currentDay + 1);
 
-        var advancingFighters = LoadAdvancingFighters(connection, currentDay);
+        var advancingFighters = LoadAdvancingFighters(connection, championshipId, currentDay);
         var nextDay = currentDay + 1;
         var orderNo = 1;
-
         foreach (var group in advancingFighters
                      .GroupBy(x => new MatchGroupKey(x.AgeCategory, x.WeightCategory, x.Gender))
                      .OrderBy(x => x.Key.AgeCategory)
@@ -37,13 +37,14 @@ public static class TournamentProgressionService
 
             foreach (var pair in pairing.Pairs)
             {
-                InsertMatch(connection, pair.RedCorner, pair.BlueCorner, nextDay, orderNo, judgesCount);
+                var ringName = ChampionshipSettingsService.ResolveRingName(group.Key.AgeCategory, group.Key.WeightCategory, group.Key.Gender, orderNo - 1);
+                InsertMatch(connection, championshipId, pair.RedCorner, pair.BlueCorner, nextDay, orderNo, judgesCount, ringName);
                 orderNo++;
             }
         }
     }
 
-    private static void DeleteMatchesFromDay(SqliteConnection connection, int dayNumber)
+    private static void DeleteMatchesFromDay(SqliteConnection connection, int championshipId, int dayNumber)
     {
         var matchIds = new List<int>();
         var read = connection.CreateCommand();
@@ -51,8 +52,10 @@ public static class TournamentProgressionService
         @"
         SELECT Id
         FROM Matches
-        WHERE DayNumber >= @dayNumber
+        WHERE ChampionshipId = @championshipId
+          AND DayNumber >= @dayNumber
         ";
+        read.Parameters.AddWithValue("@championshipId", championshipId);
         read.Parameters.AddWithValue("@dayNumber", dayNumber);
 
         using (var reader = read.ExecuteReader())
@@ -75,12 +78,13 @@ public static class TournamentProgressionService
         }
 
         var deleteMatches = connection.CreateCommand();
-        deleteMatches.CommandText = "DELETE FROM Matches WHERE DayNumber >= @dayNumber";
+        deleteMatches.CommandText = "DELETE FROM Matches WHERE ChampionshipId = @championshipId AND DayNumber >= @dayNumber";
+        deleteMatches.Parameters.AddWithValue("@championshipId", championshipId);
         deleteMatches.Parameters.AddWithValue("@dayNumber", dayNumber);
         deleteMatches.ExecuteNonQuery();
     }
 
-    private static List<AdvancingFighter> LoadAdvancingFighters(SqliteConnection connection, int currentDay)
+    private static List<AdvancingFighter> LoadAdvancingFighters(SqliteConnection connection, int championshipId, int currentDay)
     {
         var fighters = new List<AdvancingFighter>();
 
@@ -113,9 +117,11 @@ public static class TournamentProgressionService
             ON cr.Id = fr.ClubId
         LEFT JOIN Clubs cb
             ON cb.Id = fb.ClubId
-        WHERE m.DayNumber = @dayNumber
+        WHERE m.ChampionshipId = @championshipId
+          AND m.DayNumber = @dayNumber
         ORDER BY m.OrderNo, m.Id
         ";
+        command.Parameters.AddWithValue("@championshipId", championshipId);
         command.Parameters.AddWithValue("@dayNumber", currentDay);
 
         using var reader = command.ExecuteReader();
@@ -174,36 +180,28 @@ public static class TournamentProgressionService
 
     private static PairingResult BuildBestPairing(List<AdvancingFighter> fighters)
     {
-        if (fighters.Count < 2)
-            return new PairingResult();
+        var result = new PairingResult();
+        var remaining = fighters
+            .Where(x => x.FighterId > 0)
+            .ToList();
 
-        var first = fighters[0];
-        PairingResult? best = null;
-
-        for (int i = 1; i < fighters.Count; i++)
+        while (remaining.Count >= 2)
         {
-            var opponent = fighters[i];
+            var first = remaining[0];
+            var opponentIndex = remaining.FindIndex(1, opponent => CanFightEachOther(first, opponent));
 
-            if (!CanFightEachOther(first, opponent))
+            if (opponentIndex < 0)
+            {
+                remaining.RemoveAt(0);
                 continue;
+            }
 
-            var remaining = fighters
-                .Where((_, index) => index != 0 && index != i)
-                .ToList();
-
-            var candidate = BuildBestPairing(remaining);
-            candidate.Pairs.Insert(0, new MatchPair(first, opponent));
-
-            if (best == null || candidate.Pairs.Count > best.Pairs.Count)
-                best = candidate;
+            result.Pairs.Add(new MatchPair(first, remaining[opponentIndex]));
+            remaining.RemoveAt(opponentIndex);
+            remaining.RemoveAt(0);
         }
 
-        var skippedFirst = BuildBestPairing(fighters.Skip(1).ToList());
-
-        if (best == null || skippedFirst.Pairs.Count > best.Pairs.Count)
-            return skippedFirst;
-
-        return best;
+        return result;
     }
 
     private static bool CanFightEachOther(AdvancingFighter first, AdvancingFighter second)
@@ -219,17 +217,20 @@ public static class TournamentProgressionService
 
     private static void InsertMatch(
         SqliteConnection connection,
+        int championshipId,
         AdvancingFighter redCorner,
         AdvancingFighter blueCorner,
         int dayNumber,
         int orderNo,
-        int judgesCount)
+        int judgesCount,
+        string ringName)
     {
         var command = connection.CreateCommand();
         command.CommandText =
         @"
         INSERT INTO Matches
         (
+            ChampionshipId,
             Fighter1Id,
             Fighter2Id,
             Fighter1Name,
@@ -240,10 +241,12 @@ public static class TournamentProgressionService
             CategoryGroup,
             OrderNo,
             JudgesCount,
-            DayNumber
+            DayNumber,
+            RingName
         )
         VALUES
         (
+            @championshipId,
             @fighter1Id,
             @fighter2Id,
             @fighter1Name,
@@ -254,10 +257,12 @@ public static class TournamentProgressionService
             @categoryGroup,
             @orderNo,
             @judgesCount,
-            @dayNumber
+            @dayNumber,
+            @ringName
         )
         ";
 
+        command.Parameters.AddWithValue("@championshipId", championshipId);
         command.Parameters.AddWithValue("@fighter1Id", redCorner.FighterId);
         command.Parameters.AddWithValue("@fighter2Id", blueCorner.FighterId);
         command.Parameters.AddWithValue("@fighter1Name", redCorner.FighterName);
@@ -270,6 +275,7 @@ public static class TournamentProgressionService
         command.Parameters.AddWithValue("@orderNo", orderNo);
         command.Parameters.AddWithValue("@judgesCount", judgesCount);
         command.Parameters.AddWithValue("@dayNumber", dayNumber);
+        command.Parameters.AddWithValue("@ringName", ringName);
         command.ExecuteNonQuery();
     }
 

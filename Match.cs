@@ -21,6 +21,7 @@ namespace MuaythaiApp;
     public int JudgesCount { get; set; }
 
     public int DayNumber { get; set; } = 1;
+    public string RingName { get; set; } = "RING A";
 
     public string DayLabel => $"Day {DayNumber}";
 
@@ -30,6 +31,8 @@ namespace MuaythaiApp;
 {
     return
         DayLabel
+        + " | "
+        + RingName
         + " | "
         +
         CategoryGroup

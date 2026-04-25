@@ -1,5 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using MuaythaiApp.Security;
 using System;
@@ -51,17 +53,26 @@ public partial class MainWindow : Window
             LocalizationService.T("Polish")
         };
         LanguageCombo.SelectedIndex = selectedIndex;
-        FightersButton.Content = LocalizationService.T("Fighters");
-        ClubsButton.Content = LocalizationService.T("Clubs");
-        CategoriesButton.Content = LocalizationService.T("Categories");
-        MatchesButton.Content = LocalizationService.T("Matches");
-        FightResultsButton.Content = LocalizationService.T("FightResults");
-        MedalTableButton.Content = LocalizationService.T("MedalTable");
-        ReportsButton.Content = LocalizationService.T("Reports");
-        DatabaseSettingsButton.Content = LocalizationService.T("DatabaseSync");
-        ChangePasswordsButton.Content = LocalizationService.T("ChangePasswords");
-        LogoutButton.Content = LocalizationService.T("Logout");
-        CheckUpdatesButton.Content = "Check for Updates";
+        SetButtonText(RingInfoButton, LocalizationService.T("RingInformation"));
+        SetButtonText(CategoryInfoButton, LocalizationService.T("CategoryInformation"));
+        SetButtonText(ClubInfoButton, LocalizationService.T("ClubInformation"));
+        SetButtonText(AthleteInfoButton, LocalizationService.T("AthleteInformation"));
+        SetButtonText(AthleteControlButton, LocalizationService.T("AthleteControl"));
+        DefinitionsHeaderText.Text = LocalizationService.T("Definitions");
+        ChampionshipProcessHeaderText.Text = LocalizationService.T("ChampionshipProcess");
+        ReportsHeaderText.Text = LocalizationService.T("Reports");
+        SetButtonText(ChampionshipInfoButton, LocalizationService.T("ChampionshipInformationEntry"));
+        SetButtonText(AthleteScaleButton, LocalizationService.T("AthleteScale"));
+        SetButtonText(GenderControlButton, LocalizationService.T("GenderControl"));
+        SetButtonText(ScaleControlButton, LocalizationService.T("ScaleControl"));
+        SetButtonText(MatchesButton, LocalizationService.T("Matches"));
+        SetButtonText(FightResultsButton, LocalizationService.T("FightResults"));
+        SetButtonText(MedalTableButton, LocalizationService.T("MedalTable"));
+        SetButtonText(ReportsButton, LocalizationService.T("Reports"));
+        SetButtonText(DatabaseSettingsButton, LocalizationService.T("DatabaseSync"));
+        SetButtonText(ChangePasswordsButton, LocalizationService.T("ChangePasswords"));
+        SetButtonText(LogoutButton, LocalizationService.T("Logout"));
+        SetButtonText(CheckUpdatesButton, LocalizationService.T("CheckForUpdates"));
         SessionInfoText.Text = AppSession.IsAdmin
             ? LocalizationService.T("LoggedInAsAdministrator")
             : LocalizationService.T("LoggedInAsUser");
@@ -69,13 +80,27 @@ public partial class MainWindow : Window
             ? LocalizationService.T("FullAccessEnabled")
             : LocalizationService.T("LimitedAccessEnabled");
         ChangePasswordsButton.IsVisible = AppSession.IsAdmin;
-        FightersButton.IsEnabled = AppSession.IsAdmin;
-        ClubsButton.IsEnabled = AppSession.IsAdmin;
         MatchesButton.IsEnabled = AppSession.IsAdmin;
+        RingInfoButton.IsEnabled = AppSession.IsAdmin;
+        ClubInfoButton.IsEnabled = AppSession.IsAdmin;
+        AthleteInfoButton.IsEnabled = AppSession.IsAdmin;
+        AthleteControlButton.IsEnabled = AppSession.IsAdmin;
         RefreshDatabaseStatus();
         RefreshUpdateStatus();
+        LocalizationService.LocalizeControlTree(this);
 
         isUpdatingLanguageCombo = false;
+    }
+
+    private static void SetButtonText(Button button, string text)
+    {
+        button.Content = new TextBlock
+        {
+            Text = text,
+            VerticalAlignment = VerticalAlignment.Center,
+            TextAlignment = TextAlignment.Center,
+            Margin = new Avalonia.Thickness(0, 4, 0, 0)
+        };
     }
 
     private void LanguageChanged(object? sender, SelectionChangedEventArgs e)
@@ -96,8 +121,50 @@ public partial class MainWindow : Window
             return;
         }
 
-        var w = new FightersWindow();
-        w.Show();
+        try
+        {
+            StartupLogger.Log("FightersClick started");
+            Dispatcher.UIThread.Post(() =>
+            {
+                try
+                {
+                    StartupLogger.Log("FightersClick show dispatch started");
+                    var w = new FightersWindow();
+                    w.Show();
+                    w.Activate();
+                    StartupLogger.Log("FightersClick window shown");
+                }
+                catch (Exception ex)
+                {
+                    AccessInfoText.Text = $"Athlete Information could not be opened: {ex.Message}";
+                    StartupLogger.Log(ex, "FightersClick show dispatch failed");
+                }
+            }, DispatcherPriority.Background);
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Athlete Information could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "FightersClick failed");
+        }
+    }
+
+    private void RingInfoClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            StartupLogger.Log("RingInfoClick started");
+            var window = new ChampionshipSettingsWindow(
+                RefreshDatabaseStatus,
+                showInformationSection: false,
+                showRingSection: true);
+            window.Show();
+            StartupLogger.Log("RingInfoClick window shown");
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Ring Information could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "RingInfoClick failed");
+        }
     }
 
     private void ClubsClick(object? sender, RoutedEventArgs e)
@@ -108,14 +175,34 @@ public partial class MainWindow : Window
             return;
         }
 
-        var w = new ClubsWindow();
-        w.Show();
+        try
+        {
+            StartupLogger.Log("ClubsClick started");
+            var w = new ClubsWindow();
+            w.Show();
+            StartupLogger.Log("ClubsClick window shown");
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Club Information could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "ClubsClick failed");
+        }
     }
 
     private void CategoriesClick(object? sender, RoutedEventArgs e)
     {
-        var w = new CategoryWindow();
-        w.Show();
+        try
+        {
+            StartupLogger.Log("CategoriesClick started");
+            var w = new CategoryWindow();
+            w.Show();
+            StartupLogger.Log("CategoriesClick window shown");
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Category Information could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "CategoriesClick failed");
+        }
     }
 
     private void MatchesClick(object? sender, RoutedEventArgs e)
@@ -165,6 +252,48 @@ public partial class MainWindow : Window
             RefreshUpdateStatus();
         });
         window.Show();
+    }
+
+    private void ChampionshipSettingsClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            StartupLogger.Log("ChampionshipSettingsClick started");
+            var window = new ChampionshipSettingsWindow(
+                RefreshDatabaseStatus,
+                showInformationSection: true,
+                showRingSection: false);
+            window.Show();
+            StartupLogger.Log("ChampionshipSettingsClick window shown");
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Championship settings could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "ChampionshipSettingsClick failed");
+        }
+    }
+
+    private void ChampionshipProcessClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            StartupLogger.Log("ChampionshipProcessClick started");
+            var viewMode = sender switch
+            {
+                Button { Name: nameof(AthleteScaleButton) } => ChampionshipProcessViewMode.AthleteScale,
+                Button { Name: nameof(GenderControlButton) } => ChampionshipProcessViewMode.GenderControl,
+                Button { Name: nameof(ScaleControlButton) } => ChampionshipProcessViewMode.ScaleControl,
+                _ => ChampionshipProcessViewMode.AthleteControl
+            };
+            var window = new ChampionshipProcessWindow(viewMode);
+            window.Show();
+            StartupLogger.Log("ChampionshipProcess window shown");
+        }
+        catch (Exception ex)
+        {
+            AccessInfoText.Text = $"Athlete Control could not be opened: {ex.Message}";
+            StartupLogger.Log(ex, "ChampionshipProcessClick failed");
+        }
     }
 
     private void LogoutClick(object? sender, RoutedEventArgs e)

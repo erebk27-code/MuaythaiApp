@@ -163,22 +163,23 @@ public partial class DatabaseSettingsWindow : Window
         Title = LocalizationService.T("DatabaseSync");
         TitleText.Text = LocalizationService.T("DatabaseSync");
         HintText.Text = LocalizationService.T("DatabaseSyncHint");
-        ApiLabelText.Text = "Server API address";
+        ApiLabelText.Text = LocalizationService.T("ServerApiAddress");
         ApiUrlBox.Watermark = "http://209.38.240.93";
         PathLabelText.Text = LocalizationService.T("SharedDatabasePath");
         DatabasePathBox.Watermark = @"\\SERVER\Folder\muaythai.db";
-        UpdateRepoLabelText.Text = "Auto update GitHub repository";
+        UpdateRepoLabelText.Text = LocalizationService.T("AutoUpdateGithubRepository");
         UpdateRepoUrlBox.Watermark = "https://github.com/your-name/your-repo";
-        SaveUpdateRepoButton.Content = "Save Update Source";
-        ClearUpdateRepoButton.Content = "Clear Update Source";
+        SaveUpdateRepoButton.Content = LocalizationService.T("SaveUpdateSource");
+        ClearUpdateRepoButton.Content = LocalizationService.T("ClearUpdateSource");
         InfoText.Text =
             $"Remote API: {RemoteApiSettingsService.GetConfigurationHint()}{Environment.NewLine}" +
             $"Shared file mode: {DatabaseLocationService.GetConfigurationHint()}{Environment.NewLine}" +
             $"Auto update: {AutoUpdateSettingsService.GetConfigurationHint()}";
-        SaveButton.Content = "Use Remote API";
-        SaveDatabaseButton.Content = "Save Database Path";
+        SaveButton.Content = LocalizationService.T("UseRemoteApi");
+        SaveDatabaseButton.Content = LocalizationService.T("SaveDatabasePath");
         UseLocalButton.Content = LocalizationService.T("UseLocalDatabase");
         CancelButton.Content = LocalizationService.T("Cancel");
+        LocalizationService.LocalizeControlTree(this);
         RefreshCurrentPath();
     }
 

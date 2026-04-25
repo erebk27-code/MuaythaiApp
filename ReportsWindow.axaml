@@ -25,9 +25,8 @@
                FontSize="22"
                FontWeight="Bold"/>
 
-    <StackPanel Grid.Row="1"
-                Orientation="Horizontal"
-                Spacing="10">
+    <WrapPanel Grid.Row="1"
+               Orientation="Horizontal">
         <StackPanel Spacing="4">
             <TextBlock x:Name="TournamentTitleLabelText" Text="Tournament Title"/>
             <TextBox x:Name="TournamentTitleBox"
@@ -39,6 +38,27 @@
             <TextBlock x:Name="ReportTypeLabelText" Text="Report Type"/>
             <ComboBox x:Name="ReportTypeCombo"
                       Width="220"
+                      SelectionChanged="ReportChanged"/>
+        </StackPanel>
+
+        <StackPanel x:Name="ReportDayPanel" Spacing="4">
+            <TextBlock x:Name="ReportDayLabelText" Text="Day"/>
+            <ComboBox x:Name="ReportDayCombo"
+                      Width="110"
+                      SelectionChanged="ReportChanged"/>
+        </StackPanel>
+
+        <StackPanel x:Name="ReportDatePanel" Spacing="4">
+            <TextBlock x:Name="ReportDateLabelText" Text="Date"/>
+            <TextBox x:Name="ReportDateBox"
+                     Width="120"
+                     TextChanged="TournamentTitleChanged"/>
+        </StackPanel>
+
+        <StackPanel x:Name="RingPanel" Spacing="4">
+            <TextBlock x:Name="RingLabelText" Text="Ring"/>
+            <ComboBox x:Name="RingCombo"
+                      Width="120"
                       SelectionChanged="ReportChanged"/>
         </StackPanel>
 
@@ -57,7 +77,7 @@
         <Button x:Name="PrintButton" Content="Print"
                 VerticalAlignment="Bottom"
                 Click="PrintClick"/>
-    </StackPanel>
+    </WrapPanel>
 
     <TextBlock Grid.Row="2"
                x:Name="SummaryText"
@@ -68,12 +88,30 @@
             BorderThickness="1"
             CornerRadius="8"
             Padding="10">
-        <TextBox x:Name="PreviewTextBox"
-                 IsReadOnly="True"
-                 AcceptsReturn="True"
-                 TextWrapping="NoWrap"
-                 FontFamily="Cascadia Mono, Consolas, Menlo, monospace"
-                 FontSize="14"/>
+        <Grid>
+            <TextBox x:Name="PreviewTextBox"
+                     IsReadOnly="True"
+                     AcceptsReturn="True"
+                     TextWrapping="NoWrap"
+                     FontFamily="Cascadia Mono, Consolas, Menlo, monospace"
+                     FontSize="14"/>
+
+            <ScrollViewer x:Name="BracketScrollViewer"
+                          IsVisible="False"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="BracketHostPanel"
+                            Spacing="12"/>
+            </ScrollViewer>
+
+            <ScrollViewer x:Name="ScheduleScrollViewer"
+                          IsVisible="False"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="ScheduleHostPanel"
+                            Spacing="12"/>
+            </ScrollViewer>
+        </Grid>
     </Border>
 </Grid>
 </Grid>

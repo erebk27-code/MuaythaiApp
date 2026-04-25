@@ -2,8 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="MuaythaiApp.CategoryWindow"
-    Width="900"
-    Height="600"
+    Width="1100"
+    Height="700"
     Background="White"
     Title="Category Management">
 
@@ -46,6 +46,10 @@
             <TextBlock x:Name="SummaryText" VerticalAlignment="Center"/>
         </StackPanel>
 
+        <Button Content="Save Active Categories"
+                VerticalAlignment="Bottom"
+                Click="SaveActiveCategoriesClick"/>
+
     </StackPanel>
 
     <Border
@@ -61,29 +65,36 @@
                     Background="#1F1F1F"
                     Padding="10"
                     CornerRadius="6">
-                <Grid ColumnDefinitions="110,90,80,170,90,80,*"
+                <Grid ColumnDefinitions="80,220,110,90,120,120,90,80,*"
                       ColumnSpacing="10">
-                    <TextBlock Grid.Column="0" Text="Division" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="1" Text="Gender" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="2" Text="Age" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="3" Text="Weight Range" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="4" Text="Rounds" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="5" Text="Break" FontWeight="Bold" Foreground="White"/>
-                    <TextBlock Grid.Column="6" Text="Weight Classes" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="0" Text="Active" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="1" Text="Age Category" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="2" Text="Division" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="3" Text="Gender" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="4" Text="Age Range" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="5" Text="Weight Class" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="6" Text="Rounds" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="7" Text="Break" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Grid.Column="8" Text="Sort" FontWeight="Bold" Foreground="White"/>
                 </Grid>
             </Border>
 
             <ListBox Grid.Row="1" x:Name="CategoryList">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="110,90,80,170,90,80,*" Margin="0,2">
-                            <TextBlock Grid.Column="0" Text="{Binding Division}" FontWeight="Bold"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Gender}"/>
-                            <TextBlock Grid.Column="2" Text="{Binding AgeRange}"/>
-                            <TextBlock Grid.Column="3" Text="{Binding WeightRange}"/>
-                            <TextBlock Grid.Column="4" Text="{Binding RoundInfo}"/>
-                            <TextBlock Grid.Column="5" Text="{Binding BreakInfo}"/>
-                            <TextBlock Grid.Column="6" Text="{Binding WeightClassInfo}"/>
+                        <Grid ColumnDefinitions="80,220,110,90,120,120,90,80,*" Margin="0,2">
+                            <CheckBox Grid.Column="0"
+                                      IsChecked="{Binding IsActive, Mode=TwoWay}"
+                                      Checked="ActiveCategoryChanged"
+                                      Unchecked="ActiveCategoryChanged"/>
+                            <TextBlock Grid.Column="1" Text="{Binding DivisionWithAgeDisplay}" FontWeight="Bold"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Division}"/>
+                            <TextBlock Grid.Column="3" Text="{Binding Gender}"/>
+                            <TextBlock Grid.Column="4" Text="{Binding AgeRange}"/>
+                            <TextBlock Grid.Column="5" Text="{Binding CategoryDisplay}"/>
+                            <TextBlock Grid.Column="6" Text="{Binding RoundInfo}"/>
+                            <TextBlock Grid.Column="7" Text="{Binding BreakInfo}"/>
+                            <TextBlock Grid.Column="8" Text="{Binding SortOrder}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

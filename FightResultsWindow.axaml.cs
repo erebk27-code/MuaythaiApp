@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Microsoft.Data.Sqlite;
 using MuaythaiApp.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ public partial class FightResultsWindow : Window
     {
         InitializeComponent();
         databaseAutoRefresh = new DatabaseAutoRefresh(this, LoadResults);
-        DayFilterCombo.ItemsSource = Enumerable.Range(1, 4)
+        DayFilterCombo.ItemsSource = Enumerable.Range(1, ChampionshipSettingsService.GetDayCount())
             .Select(day => $"Day {day}")
             .ToList();
         DayFilterCombo.SelectedIndex = 0;
@@ -30,6 +31,7 @@ public partial class FightResultsWindow : Window
     private void LoadResults()
     {
         allResults.Clear();
+        var championshipId = ChampionshipSettingsService.GetOrCreateActiveChampionshipId();
 
         using var c = DatabaseHelper.CreateConnection();
         c.Open();
@@ -51,8 +53,10 @@ public partial class FightResultsWindow : Window
         FROM MatchResult
         INNER JOIN Matches
             ON MatchResult.MatchId = Matches.Id
+        WHERE Matches.ChampionshipId = @championshipId
         ORDER BY Matches.OrderNo, MatchResult.MatchId
         ";
+        cmd.Parameters.AddWithValue("@championshipId", championshipId);
 
         using var r = cmd.ExecuteReader();
 
@@ -70,11 +74,7 @@ public partial class FightResultsWindow : Window
                 RedName = redName,
                 BlueName = blueName,
                 WinnerSide = winnerSide,
-                WinnerName = winnerSide == "Red"
-                    ? redName
-                    : winnerSide == "Blue"
-                        ? blueName
-                        : "Tie",
+                WinnerName = ResolveWinnerName(winnerSide, redName, blueName),
                 Category = r.IsDBNull(6) ? string.Empty : r.GetString(6),
                 WeightClass = r.IsDBNull(7) ? string.Empty : r.GetString(7),
                 Method = r.IsDBNull(8) ? string.Empty : r.GetString(8),
@@ -141,10 +141,12 @@ public partial class FightResultsWindow : Window
         ResultWeightHeaderText.Text = LocalizationService.T("Weight");
         ResultMethodHeaderText.Text = LocalizationService.T("Method");
         ResultRoundHeaderText.Text = LocalizationService.T("Round");
-        DayFilterCombo.ItemsSource = Enumerable.Range(1, 4)
+        DayFilterCombo.ItemsSource = Enumerable.Range(1, ChampionshipSettingsService.GetDayCount())
             .Select(day => $"{LocalizationService.T("Day")} {day}")
             .ToList();
         DayFilterCombo.SelectedIndex = selectedDayNumber - 1;
+        SearchBox.Watermark = LocalizationService.T("WinnerRedBlueOrCategory");
+        LocalizationService.LocalizeControlTree(this);
     }
 
     private int ParseSelectedDayNumber()
@@ -159,5 +161,16 @@ public partial class FightResultsWindow : Window
         }
 
         return 1;
+    }
+
+    private static string ResolveWinnerName(string winnerSide, string redName, string blueName)
+    {
+        if (string.Equals(winnerSide, "Red", StringComparison.OrdinalIgnoreCase))
+            return string.IsNullOrWhiteSpace(redName) ? "BYE" : redName;
+
+        if (string.Equals(winnerSide, "Blue", StringComparison.OrdinalIgnoreCase))
+            return string.IsNullOrWhiteSpace(blueName) ? "BYE" : blueName;
+
+        return "Tie";
     }
 }

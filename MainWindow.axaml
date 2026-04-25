@@ -2,97 +2,250 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="MuaythaiApp.MainWindow"
-    Width="560"
-    Height="600"
+    Width="1220"
+    Height="760"
     WindowStartupLocation="CenterScreen"
     ShowActivated="True"
-    Background="White"
+    Background="{StaticResource AppSurfaceBrush}"
     Title="MuaythaiApp">
 
     <Grid>
         <Grid IsHitTestVisible="False"
-              Opacity="0.08"
+              Opacity="0.028"
               HorizontalAlignment="Center"
               VerticalAlignment="Center">
             <Image Source="avares://MuaythaiApp/PZMT.png"
-                   Width="220"
-                   Height="220"
+                   Width="520"
+                   Height="520"
                    Stretch="Uniform"/>
         </Grid>
 
-    <StackPanel Margin="20" Spacing="10">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="24" Spacing="18">
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock x:Name="LanguageLabel"
-                       VerticalAlignment="Center"
-                       Text="Language"/>
-            <ComboBox x:Name="LanguageCombo"
-                      Width="140"
-                      SelectionChanged="LanguageChanged"/>
-        </StackPanel>
+        <Border CornerRadius="12"
+                Padding="20,16"
+                BorderBrush="{StaticResource AppAccentGoldBrush}"
+                BorderThickness="0,0,0,2"
+                BoxShadow="0 1 3 0 #14000000">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="{StaticResource AppPrimaryDarkColor}" Offset="0"/>
+                    <GradientStop Color="{StaticResource AppPrimaryDarkAltColor}" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
+                <StackPanel Spacing="5">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="34"
+                                Height="34"
+                                CornerRadius="17"
+                                Background="#14FFFFFF"
+                                BorderBrush="#30FFFFFF"
+                                BorderThickness="1">
+                            <Viewbox Width="20" Height="20">
+                                <Path Fill="White"
+                                      Data="M10,1 L12,6 L17,7 L13,10 L15,16 L10,13 L5,16 L7,10 L3,7 L8,6 Z"/>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="MuaythaiApp"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock x:Name="SessionInfoText"
+                               FontSize="12"
+                               Opacity="0.70"
+                               Foreground="White"/>
+                    <TextBlock x:Name="AccessInfoText"
+                               FontSize="12"
+                               Opacity="0.70"
+                               Foreground="White"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
 
-        <TextBlock x:Name="SessionInfoText"
-                   FontWeight="SemiBold"/>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Top">
+                    <TextBlock x:Name="LanguageLabel"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Opacity="0.82"
+                               Foreground="White"
+                               Text="Language"/>
+                    <ComboBox x:Name="LanguageCombo"
+                              Classes="header-language"
+                              Width="150"
+                              SelectionChanged="LanguageChanged"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-        <TextBlock x:Name="AccessInfoText"
-                   Foreground="#555555"
-                   TextWrapping="Wrap"/>
+        <Border Background="{StaticResource AppPanelBrush}"
+                BorderBrush="{StaticResource AppBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                BoxShadow="0 1 3 0 #14000000">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Border Width="9"
+                            Height="9"
+                            CornerRadius="5"
+                            Background="{StaticResource AppPrimaryGreenBrush}"
+                            VerticalAlignment="Center"/>
+                    <TextBlock x:Name="DatabasePathText"
+                               FontSize="12"
+                               Foreground="{StaticResource AppMutedBrush}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
 
-        <TextBlock x:Name="DatabasePathText"
-                   Foreground="#555555"
-                   TextWrapping="Wrap"/>
+                <WrapPanel Orientation="Horizontal"
+                           ItemSpacing="8"
+                           VerticalAlignment="Center">
+                    <Button x:Name="DatabaseSettingsButton"
+                            Classes="outline-pill"
+                            Content="Database Sync"
+                            Click="DatabaseSettingsClick"/>
+                    <Button x:Name="ChangePasswordsButton"
+                            Classes="outline-pill"
+                            Content="Change Passwords"
+                            Click="ChangePasswordsClick"/>
+                    <Button x:Name="LogoutButton"
+                            Classes="outline-pill"
+                            Content="Logout"
+                            Click="LogoutClick"/>
+                    <Button x:Name="CheckUpdatesButton"
+                            Classes="outline-pill"
+                            Content="Check for Updates"
+                            Click="CheckUpdatesClick"/>
+                    <TextBlock x:Name="UpdateStatusText"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{StaticResource AppMutedBrush}"
+                               TextWrapping="Wrap"/>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <Button x:Name="DatabaseSettingsButton"
-                    Content="Database Sync"
-                    Click="DatabaseSettingsClick"/>
-            <Button x:Name="ChangePasswordsButton"
-                    Content="Change Passwords"
-                    Click="ChangePasswordsClick"/>
-            <Button x:Name="LogoutButton"
-                    Content="Logout"
-                    Click="LogoutClick"/>
-        </StackPanel>
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
+            <Border Grid.Column="0"
+                    Background="{StaticResource AppPanelBrush}"
+                    BorderBrush="{StaticResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="0,0,0,20"
+                    BoxShadow="0 1 3 0 #14000000">
+                <StackPanel Spacing="0">
+                    <Border Background="{StaticResource AppPrimaryDarkAltBrush}"
+                            CornerRadius="12,12,0,0"
+                            Padding="20,14">
+                        <TextBlock x:Name="DefinitionsHeaderText"
+                                   Text="Definitions"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Foreground="White"/>
+                    </Border>
+                    <StackPanel Margin="20" Spacing="8">
+                        <Button x:Name="ChampionshipInfoButton"
+                                Classes="nav-action"
+                                Click="ChampionshipSettingsClick"/>
+                        <Button x:Name="RingInfoButton"
+                                Classes="nav-action"
+                                Click="RingInfoClick"/>
+                        <Button x:Name="CategoryInfoButton"
+                                Classes="nav-action"
+                                Click="CategoriesClick"/>
+                        <Button x:Name="ClubInfoButton"
+                                Classes="nav-action"
+                                Click="ClubsClick"/>
+                        <Button x:Name="AthleteInfoButton"
+                                Classes="nav-action"
+                                Click="FightersClick"/>
+                        <Button x:Name="AthleteControlButton"
+                                Classes="nav-action"
+                                Click="ChampionshipProcessClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <Button x:Name="CheckUpdatesButton"
-                    Content="Check for Updates"
-                    Click="CheckUpdatesClick"/>
-            <TextBlock x:Name="UpdateStatusText"
-                       VerticalAlignment="Center"
-                       Foreground="#555555"
-                       TextWrapping="Wrap"/>
-        </StackPanel>
+            <Border Grid.Column="1"
+                    Background="{StaticResource AppPanelBrush}"
+                    BorderBrush="{StaticResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="0,0,0,20"
+                    BoxShadow="0 1 3 0 #14000000">
+                <StackPanel Spacing="0">
+                    <Border Background="{StaticResource AppPrimaryGreenBrush}"
+                            CornerRadius="12,12,0,0"
+                            Padding="20,14">
+                        <TextBlock x:Name="ChampionshipProcessHeaderText"
+                                   Text="Championship Process"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Foreground="White"/>
+                    </Border>
+                    <StackPanel Margin="20" Spacing="8">
+                        <Button x:Name="AthleteScaleButton"
+                                Classes="nav-action"
+                                Click="ChampionshipProcessClick"/>
+                        <Button x:Name="GenderControlButton"
+                                Classes="nav-action"
+                                Click="ChampionshipProcessClick"/>
+                        <Button x:Name="ScaleControlButton"
+                                Classes="nav-action"
+                                Click="ChampionshipProcessClick"/>
+                        <Button x:Name="MatchesButton"
+                                Classes="nav-action"
+                                Click="MatchesClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
 
-        <Button x:Name="FightersButton"
-                Content="Fighters"
-                Click="FightersClick"/>
+            <Border Grid.Column="2"
+                    Background="{StaticResource AppPanelBrush}"
+                    BorderBrush="{StaticResource AppBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="0,0,0,20"
+                    BoxShadow="0 1 3 0 #14000000">
+                <StackPanel Spacing="0">
+                    <Border Background="{StaticResource AppAccentGoldBrush}"
+                            CornerRadius="12,12,0,0"
+                            Padding="20,14">
+                        <TextBlock x:Name="ReportsHeaderText"
+                                   Text="Reports"
+                                   FontWeight="SemiBold"
+                                   FontSize="16"
+                                   Foreground="White"/>
+                    </Border>
+                    <StackPanel Margin="20" Spacing="8">
+                        <Button x:Name="FightResultsButton"
+                                Classes="nav-action"
+                                Click="FightResultsClick"/>
+                        <Button x:Name="MedalTableButton"
+                                Classes="nav-action"
+                                Click="MedalTableClick"/>
+                        <Button x:Name="ReportsButton"
+                                Classes="nav-action"
+                                Click="ReportsClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
 
-        <Button x:Name="ClubsButton"
-                Content="Clubs"
-                Click="ClubsClick"/>
-
-        <Button x:Name="CategoriesButton"
-                Content="Categories"
-                Click="CategoriesClick"/>
-
-        <Button x:Name="MatchesButton"
-                Content="Matches"
-                Click="MatchesClick"/>
-
-        <Button x:Name="FightResultsButton"
-                Content="Fight Results"
-                Click="FightResultsClick"/>
-
-        <Button x:Name="MedalTableButton"
-                Content="Medal Table"
-                Click="MedalTableClick"/>
-
-        <Button x:Name="ReportsButton"
-                Content="Reports"
-                Click="ReportsClick"/>
+        <TextBlock Text="MuaythaiApp v1.0.0  |  Polish Muay Thai Federation"
+                   FontSize="12"
+                   Foreground="{StaticResource AppMutedBrush}"
+                   HorizontalAlignment="Center"
+                   Margin="0,2,0,0"/>
 
     </StackPanel>
+    </ScrollViewer>
     </Grid>
 
 </Window>

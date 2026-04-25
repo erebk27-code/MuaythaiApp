@@ -23,6 +23,7 @@ public partial class LoginWindow : Window
     {
         StartupLogger.Log("LoginWindow constructor started");
         InitializeComponent();
+        LocalizationService.LocalizeControlTree(this);
         StartupLogger.Log("LoginWindow InitializeComponent completed");
 
         this.onLoginSuccess = onLoginSuccess;

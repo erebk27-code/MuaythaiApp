@@ -112,9 +112,29 @@ public class DatabaseHelper
         JudgeBlue INTEGER
     );
 
+    CREATE TABLE IF NOT EXISTS AthleteDailyChecks (
+        FighterId INTEGER NOT NULL,
+        DayNumber INTEGER NOT NULL,
+        ChampionshipId INTEGER NOT NULL DEFAULT 1,
+        MeasuredWeight REAL NULL,
+        GenderConfirmed INTEGER NOT NULL DEFAULT 1,
+        PRIMARY KEY (FighterId, DayNumber, ChampionshipId)
+    );
+
     CREATE TABLE IF NOT EXISTS AppSettings (
         Key TEXT PRIMARY KEY,
         Value TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS Championships (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL,
+        Address TEXT NOT NULL DEFAULT '',
+        StartDate TEXT,
+        EndDate TEXT,
+        RingDefinitionsJson TEXT NOT NULL DEFAULT '[]',
+        ActiveCategoryIds TEXT NOT NULL DEFAULT '',
+        CreatedAtUtc TEXT NOT NULL DEFAULT ''
     );
     ";
 
@@ -124,6 +144,8 @@ public class DatabaseHelper
         EnsureClubColumns(connection);
         EnsureCategoryColumns(connection);
         EnsureMatchColumns(connection);
+        EnsureAthleteDailyCheckColumns(connection);
+        EnsureChampionshipSchema(connection);
         EnsureDefaultPasswords(connection);
         SeedCategories(connection);
         NormalizeCategoryGenders(connection);
@@ -237,8 +259,185 @@ public class DatabaseHelper
     {
         var existingColumns = GetExistingColumns(connection, "Matches");
 
+        AddColumnIfMissing(connection, existingColumns, "ChampionshipId",
+            "ALTER TABLE Matches ADD COLUMN ChampionshipId INTEGER NOT NULL DEFAULT 1");
         AddColumnIfMissing(connection, existingColumns, "DayNumber",
             "ALTER TABLE Matches ADD COLUMN DayNumber INTEGER NOT NULL DEFAULT 1");
+        AddColumnIfMissing(connection, existingColumns, "RingName",
+            "ALTER TABLE Matches ADD COLUMN RingName TEXT NOT NULL DEFAULT 'RING A'");
+
+        var normalizeRingNames = connection.CreateCommand();
+        normalizeRingNames.CommandText =
+        @"
+        UPDATE Matches
+        SET RingName = 'RING A'
+        WHERE RingName IS NULL OR TRIM(RingName) = ''
+        ";
+        normalizeRingNames.ExecuteNonQuery();
+    }
+
+    private void EnsureAthleteDailyCheckColumns(SqliteConnection connection)
+    {
+        var existingColumns = GetExistingColumns(connection, "AthleteDailyChecks");
+
+        AddColumnIfMissing(connection, existingColumns, "ChampionshipId",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN ChampionshipId INTEGER NOT NULL DEFAULT 1");
+        AddColumnIfMissing(connection, existingColumns, "LicensePresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN LicensePresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "MedicalReportPresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN MedicalReportPresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "IdentityPresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN IdentityPresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "InsurancePresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN InsurancePresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "RegistrationFormPresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN RegistrationFormPresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "GuardianConsentPresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN GuardianConsentPresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "SeniorGuardianConsentPresented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN SeniorGuardianConsentPresented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "AmateurLicense2026Presented",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN AmateurLicense2026Presented INTEGER NOT NULL DEFAULT 0");
+        AddColumnIfMissing(connection, existingColumns, "PolishCitizenshipConfirmed",
+            "ALTER TABLE AthleteDailyChecks ADD COLUMN PolishCitizenshipConfirmed INTEGER NOT NULL DEFAULT 0");
+
+        EnsureAthleteDailyChecksPrimaryKey(connection);
+    }
+
+    private void EnsureAthleteDailyChecksPrimaryKey(SqliteConnection connection)
+    {
+        var primaryKeyColumns = GetPrimaryKeyColumns(connection, "AthleteDailyChecks");
+        if (primaryKeyColumns.SequenceEqual(new[] { "FighterId", "DayNumber", "ChampionshipId" }))
+            return;
+
+        using var transaction = connection.BeginTransaction();
+        ExecuteNonQuery(connection, transaction, "ALTER TABLE AthleteDailyChecks RENAME TO AthleteDailyChecks_Legacy");
+        ExecuteNonQuery(connection, transaction,
+        @"
+        CREATE TABLE AthleteDailyChecks (
+            FighterId INTEGER NOT NULL,
+            DayNumber INTEGER NOT NULL,
+            ChampionshipId INTEGER NOT NULL DEFAULT 1,
+            MeasuredWeight REAL NULL,
+            GenderConfirmed INTEGER NOT NULL DEFAULT 1,
+            LicensePresented INTEGER NOT NULL DEFAULT 0,
+            MedicalReportPresented INTEGER NOT NULL DEFAULT 0,
+            IdentityPresented INTEGER NOT NULL DEFAULT 0,
+            InsurancePresented INTEGER NOT NULL DEFAULT 0,
+            RegistrationFormPresented INTEGER NOT NULL DEFAULT 0,
+            GuardianConsentPresented INTEGER NOT NULL DEFAULT 0,
+            SeniorGuardianConsentPresented INTEGER NOT NULL DEFAULT 0,
+            AmateurLicense2026Presented INTEGER NOT NULL DEFAULT 0,
+            PolishCitizenshipConfirmed INTEGER NOT NULL DEFAULT 0,
+            PRIMARY KEY (FighterId, DayNumber, ChampionshipId)
+        )
+        ");
+        ExecuteNonQuery(connection, transaction,
+        @"
+        INSERT OR REPLACE INTO AthleteDailyChecks
+        (
+            FighterId,
+            DayNumber,
+            ChampionshipId,
+            MeasuredWeight,
+            GenderConfirmed,
+            LicensePresented,
+            MedicalReportPresented,
+            IdentityPresented,
+            InsurancePresented,
+            RegistrationFormPresented,
+            GuardianConsentPresented,
+            SeniorGuardianConsentPresented,
+            AmateurLicense2026Presented,
+            PolishCitizenshipConfirmed
+        )
+        SELECT
+            FighterId,
+            DayNumber,
+            CASE
+                WHEN ChampionshipId IS NULL OR ChampionshipId <= 0 THEN 1
+                ELSE ChampionshipId
+            END,
+            MeasuredWeight,
+            COALESCE(GenderConfirmed, 1),
+            COALESCE(LicensePresented, 0),
+            COALESCE(MedicalReportPresented, 0),
+            COALESCE(IdentityPresented, 0),
+            COALESCE(InsurancePresented, 0),
+            COALESCE(RegistrationFormPresented, 0),
+            COALESCE(GuardianConsentPresented, 0),
+            COALESCE(SeniorGuardianConsentPresented, 0),
+            COALESCE(AmateurLicense2026Presented, 0),
+            COALESCE(PolishCitizenshipConfirmed, 0)
+        FROM AthleteDailyChecks_Legacy
+        ");
+        ExecuteNonQuery(connection, transaction, "DROP TABLE AthleteDailyChecks_Legacy");
+        transaction.Commit();
+    }
+
+    private void EnsureChampionshipSchema(SqliteConnection connection)
+    {
+        EnsureSetting(connection, "CurrentChampionshipId", "1");
+
+        var countCommand = connection.CreateCommand();
+        countCommand.CommandText = "SELECT COUNT(*) FROM Championships";
+        var championshipCount = Convert.ToInt32(countCommand.ExecuteScalar() ?? 0);
+
+        if (championshipCount == 0)
+        {
+            var insertDefault = connection.CreateCommand();
+            insertDefault.CommandText =
+            @"
+            INSERT INTO Championships
+            (
+                Id,
+                Name,
+                Address,
+                StartDate,
+                EndDate,
+                RingDefinitionsJson,
+                ActiveCategoryIds,
+                CreatedAtUtc
+            )
+            VALUES
+            (
+                1,
+                @name,
+                @address,
+                @startDate,
+                @endDate,
+                @ringDefinitionsJson,
+                @activeCategoryIds,
+                @createdAtUtc
+            )
+            ";
+            insertDefault.Parameters.AddWithValue("@name", ReadSetting(connection, "Championship.Name") ?? "Muaythai Championship");
+            insertDefault.Parameters.AddWithValue("@address", ReadSetting(connection, "Championship.Address") ?? string.Empty);
+            insertDefault.Parameters.AddWithValue("@startDate", ReadSetting(connection, "Championship.StartDate") as object ?? DBNull.Value);
+            insertDefault.Parameters.AddWithValue("@endDate", ReadSetting(connection, "Championship.EndDate") as object ?? DBNull.Value);
+            insertDefault.Parameters.AddWithValue("@ringDefinitionsJson", BuildLegacyRingDefinitionsJson(connection));
+            insertDefault.Parameters.AddWithValue("@activeCategoryIds", ReadSetting(connection, "Championship.ActiveCategoryIds") ?? string.Empty);
+            insertDefault.Parameters.AddWithValue("@createdAtUtc", DateTime.UtcNow.ToString("O"));
+            insertDefault.ExecuteNonQuery();
+        }
+
+        var normalizeMatches = connection.CreateCommand();
+        normalizeMatches.CommandText =
+        @"
+        UPDATE Matches
+        SET ChampionshipId = 1
+        WHERE ChampionshipId IS NULL OR ChampionshipId <= 0
+        ";
+        normalizeMatches.ExecuteNonQuery();
+
+        var normalizeChecks = connection.CreateCommand();
+        normalizeChecks.CommandText =
+        @"
+        UPDATE AthleteDailyChecks
+        SET ChampionshipId = 1
+        WHERE ChampionshipId IS NULL OR ChampionshipId <= 0
+        ";
+        normalizeChecks.ExecuteNonQuery();
     }
 
     private void AddColumnIfMissing(
@@ -294,6 +493,34 @@ public class DatabaseHelper
         insertCommand.ExecuteNonQuery();
     }
 
+    private string? ReadSetting(SqliteConnection connection, string key)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText =
+        @"
+        SELECT Value
+        FROM AppSettings
+        WHERE Key = @key
+        LIMIT 1
+        ";
+        command.Parameters.AddWithValue("@key", key);
+        return command.ExecuteScalar()?.ToString();
+    }
+
+    private string BuildLegacyRingDefinitionsJson(SqliteConnection connection)
+    {
+        var json = ReadSetting(connection, "Championship.RingDefinitions");
+        if (!string.IsNullOrWhiteSpace(json))
+            return json;
+
+        var ringNames = ReadSetting(connection, "Championship.RingNames") ?? "RING A";
+        var definitions = ringNames
+            .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(x => $"{{\"RingName\":\"{x.Replace("\"", "\\\"")}\",\"JudgesText\":\"\",\"DivisionNamesText\":\"\",\"GendersText\":\"\"}}");
+
+        return $"[{string.Join(",", definitions)}]";
+    }
+
     private HashSet<string> GetExistingColumns(SqliteConnection connection, string tableName)
     {
         var columns = new HashSet<string>();
@@ -307,6 +534,35 @@ public class DatabaseHelper
             columns.Add(reader.GetString(1));
 
         return columns;
+    }
+
+    private List<string> GetPrimaryKeyColumns(SqliteConnection connection, string tableName)
+    {
+        var columns = new List<(int Order, string Name)>();
+
+        var pragma = connection.CreateCommand();
+        pragma.CommandText = $"PRAGMA table_info({tableName})";
+
+        using var reader = pragma.ExecuteReader();
+        while (reader.Read())
+        {
+            var primaryKeyOrder = reader.GetInt32(5);
+            if (primaryKeyOrder > 0)
+                columns.Add((primaryKeyOrder, reader.GetString(1)));
+        }
+
+        return columns
+            .OrderBy(x => x.Order)
+            .Select(x => x.Name)
+            .ToList();
+    }
+
+    private void ExecuteNonQuery(SqliteConnection connection, SqliteTransaction transaction, string sql)
+    {
+        var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = sql;
+        command.ExecuteNonQuery();
     }
 
     private void SeedCategories(SqliteConnection connection)

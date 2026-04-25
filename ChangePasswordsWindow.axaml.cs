@@ -17,6 +17,7 @@ public partial class ChangePasswordsWindow : Window
     public ChangePasswordsWindow()
     {
         InitializeComponent();
+        LocalizationService.LocalizeControlTree(this);
 
         if (!AppSession.IsAdmin)
         {
@@ -39,7 +40,9 @@ public partial class ChangePasswordsWindow : Window
             return;
         }
 
-        StatusText.Text = "Passwords saved successfully.";
+        StatusText.Text = LocalizationService.CurrentLanguage == AppLanguage.Polish
+            ? "Hasla zapisane pomyslnie."
+            : "Passwords saved successfully.";
         StatusText.Foreground = Avalonia.Media.Brushes.DarkGreen;
         if (CurrentAdminPasswordInput != null) CurrentAdminPasswordInput.Text = string.Empty;
         if (NewAdminPasswordInput != null) NewAdminPasswordInput.Text = string.Empty;

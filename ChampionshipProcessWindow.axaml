@@ -1,0 +1,250 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.ChampionshipProcessWindow"
+    Width="1320"
+    Height="900"
+    Background="White"
+    Title="Championship Process">
+
+<Grid x:Name="RootGrid"
+      Margin="12"
+      RowDefinitions="Auto,Auto,*,*,*,Auto"
+      RowSpacing="12">
+    <TextBlock x:Name="WindowTitleText"
+               Text="Championship Process"
+               FontSize="22"
+               FontWeight="Bold"/>
+
+    <StackPanel Grid.Row="1"
+                Orientation="Horizontal"
+                Spacing="10">
+        <TextBlock x:Name="ProcessDayLabelText"
+                   VerticalAlignment="Center"
+                   Text="Day"/>
+        <ComboBox x:Name="DayCombo"
+                  Width="120"
+                  SelectionChanged="DayChanged"/>
+        <Button x:Name="RefreshButton"
+                Content="Refresh"
+                Click="RefreshClick"/>
+        <Button x:Name="SaveButton"
+                Content="Save"
+                Click="SaveClick"/>
+        <Button x:Name="ApplyButton"
+                Content="Apply Controls"
+                Click="ApplyControlsClick"/>
+        <TextBlock x:Name="SearchFighterLabelText"
+                   Margin="18,0,0,0"
+                   VerticalAlignment="Center"
+                   Text="Search Fighter"/>
+        <TextBox x:Name="SearchFighterBox"
+                 Width="260"
+                 TextChanged="SearchFighterTextChanged"/>
+    </StackPanel>
+
+    <Border x:Name="AthleteScaleSection"
+            Grid.Row="2"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10">
+        <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <TextBlock x:Name="AthleteScaleTitleText"
+                       Text="Athlete List and Scale"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <ListBox Grid.Row="1"
+                     x:Name="AthleteScaleListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8"
+                                BorderBrush="#E2E2E2"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="220,70,100,140,110,*"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding FighterName}" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Age}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding Gender}"/>
+                                <TextBlock Grid.Column="3" Text="{Binding CategoryDisplay}"/>
+                                <TextBox Grid.Column="4"
+                                         Text="{Binding MeasuredWeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         TextChanged="EntryTextChanged"
+                                         Watermark="kg"/>
+                                <TextBlock Grid.Column="5" Text="{Binding ClubName}" Foreground="#555"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+    <Border x:Name="DocumentControlSection"
+            Grid.Row="3"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10">
+        <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <TextBlock x:Name="GenderControlTitleText"
+                       Text="Document Control"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <ListBox Grid.Row="1"
+                     x:Name="GenderControlListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8"
+                                BorderBrush="#E2E2E2"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="200,220,*,140"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding FighterName}" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding RequirementHint}"
+                                           Foreground="#666"
+                                           TextWrapping="Wrap"/>
+                                <StackPanel Grid.Column="2"
+                                            Spacing="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <CheckBox Content="{Binding MedicalFitnessLabel}"
+                                                  IsChecked="{Binding MedicalReportPresented, Mode=TwoWay}"
+                                                  Tag="MedicalReportPresented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"/>
+                                        <CheckBox Content="{Binding InsuranceLabel}"
+                                                  IsChecked="{Binding InsurancePresented, Mode=TwoWay}"
+                                                  Tag="InsurancePresented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"/>
+                                        <CheckBox Content="{Binding RegistrationFormLabel}"
+                                                  IsChecked="{Binding RegistrationFormPresented, Mode=TwoWay}"
+                                                  Tag="RegistrationFormPresented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <CheckBox Content="{Binding GuardianConsentLabel}"
+                                                  IsChecked="{Binding GuardianConsentPresented, Mode=TwoWay}"
+                                                  Tag="GuardianConsentPresented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"
+                                                  IsEnabled="{Binding RequiresGuardianConsent}"/>
+                                        <CheckBox Content="{Binding SeniorGuardianConsentLabel}"
+                                                  IsChecked="{Binding SeniorGuardianConsentPresented, Mode=TwoWay}"
+                                                  Tag="SeniorGuardianConsentPresented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"
+                                                  IsEnabled="{Binding RequiresSeniorGuardianConsent}"/>
+                                        <CheckBox Content="{Binding AmateurLicense2026Label}"
+                                                  IsChecked="{Binding AmateurLicense2026Presented, Mode=TwoWay}"
+                                                  Tag="AmateurLicense2026Presented"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <CheckBox Content="{Binding PolishCitizenshipLabel}"
+                                                  IsChecked="{Binding PolishCitizenshipConfirmed, Mode=TwoWay}"
+                                                  Tag="PolishCitizenshipConfirmed"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"
+                                                  IsEnabled="{Binding RequiresPolishCitizenship}"/>
+                                        <CheckBox Content="{Binding GenderVerifiedLabel}"
+                                                  IsChecked="{Binding GenderConfirmed, Mode=TwoWay}"
+                                                  Tag="GenderConfirmed"
+                                                  Checked="DocumentCheckChanged"
+                                                  Unchecked="DocumentCheckChanged"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button Grid.Column="3"
+                                        Content="{Binding SelectAllDocumentsLabel}"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Click="SelectAllDocumentsClick"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+    <Border x:Name="GenderControlSection"
+            Grid.Row="3"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10"
+            IsVisible="False">
+        <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <TextBlock x:Name="GenderOnlyControlTitleText"
+                       Text="Gender Control"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <ListBox Grid.Row="1"
+                     x:Name="GenderOnlyControlListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8"
+                                BorderBrush="#E2E2E2"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="220,100,*"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding FighterName}" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Gender}"/>
+                                <CheckBox Grid.Column="2"
+                                          Content="{Binding GenderVerifiedLabel}"
+                                          IsChecked="{Binding GenderConfirmed, Mode=TwoWay}"
+                                          Tag="GenderConfirmed"
+                                          Checked="DocumentCheckChanged"
+                                          Unchecked="DocumentCheckChanged"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+    <Border x:Name="EligibilityStatusSection"
+            Grid.Row="4"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="10">
+        <Grid RowDefinitions="Auto,*" RowSpacing="8">
+            <TextBlock x:Name="ScaleControlTitleText"
+                       Text="Eligibility Status"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <ListBox Grid.Row="1"
+                     x:Name="ScaleControlListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8"
+                                BorderBrush="#E2E2E2"
+                                BorderThickness="0,0,0,1">
+                            <Grid ColumnDefinitions="220,140,*"
+                                  ColumnSpacing="10">
+                                <TextBlock Grid.Column="0" Text="{Binding FighterName}" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ScaleStatus}"/>
+                                <TextBlock Grid.Column="2" Text="{Binding ControlNote}" TextWrapping="Wrap"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+
+    <TextBlock Grid.Row="5"
+               x:Name="SummaryText"
+               Foreground="#444"/>
+</Grid>
+
+</Window>

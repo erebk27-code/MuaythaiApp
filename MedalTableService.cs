@@ -166,6 +166,7 @@ public static class MedalTableService
 
         using var connection = DatabaseHelper.CreateConnection();
         connection.Open();
+        var championshipId = ChampionshipSettingsService.GetOrCreateActiveChampionshipId();
 
         var command = connection.CreateCommand();
         command.CommandText =
@@ -182,8 +183,10 @@ public static class MedalTableService
         FROM Matches m
         LEFT JOIN MatchResult mr
             ON mr.MatchId = m.Id
+        WHERE m.ChampionshipId = @championshipId
         ORDER BY m.DayNumber, m.OrderNo, m.Id
         ";
+        command.Parameters.AddWithValue("@championshipId", championshipId);
 
         using var reader = command.ExecuteReader();
 

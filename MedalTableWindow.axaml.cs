@@ -134,5 +134,6 @@ public partial class MedalTableWindow : Window
         AwardCategoryHeaderText.Text = LocalizationService.T("Category");
         AwardWeightHeaderText.Text = LocalizationService.T("Weight");
         AwardGenderHeaderText.Text = LocalizationService.T("Gender");
+        LocalizationService.LocalizeControlTree(this);
     }
 }

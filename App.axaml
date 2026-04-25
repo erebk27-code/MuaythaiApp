@@ -4,8 +4,144 @@
     x:Class="MuaythaiApp.App"
     RequestedThemeVariant="Light">
 
+    <Application.Resources>
+        <Color x:Key="AppPrimaryDarkColor">#202124</Color>
+        <Color x:Key="AppPrimaryDarkAltColor">#34363A</Color>
+        <Color x:Key="AppPrimaryGreenColor">#355C7D</Color>
+        <Color x:Key="AppAccentGoldColor">#B56A3A</Color>
+        <Color x:Key="AppSurfaceLightColor">#F7F6F2</Color>
+        <Color x:Key="AppCardWhiteColor">#FFFFFF</Color>
+        <Color x:Key="AppBorderSubtleColor">#DDD8CF</Color>
+        <Color x:Key="AppTextPrimaryColor">#202124</Color>
+        <Color x:Key="AppTextMutedColor">#6F6B63</Color>
+        <Color x:Key="AppSuccessColor">#355C7D</Color>
+        <Color x:Key="AppWarningColor">#B56A3A</Color>
+        <Color x:Key="AppDangerColor">#B34135</Color>
+
+        <SolidColorBrush x:Key="AppPrimaryDarkBrush" Color="{StaticResource AppPrimaryDarkColor}"/>
+        <SolidColorBrush x:Key="AppPrimaryDarkAltBrush" Color="{StaticResource AppPrimaryDarkAltColor}"/>
+        <SolidColorBrush x:Key="AppPrimaryGreenBrush" Color="{StaticResource AppPrimaryGreenColor}"/>
+        <SolidColorBrush x:Key="AppAccentGoldBrush" Color="{StaticResource AppAccentGoldColor}"/>
+        <SolidColorBrush x:Key="AppSurfaceBrush" Color="{StaticResource AppSurfaceLightColor}"/>
+        <SolidColorBrush x:Key="AppPanelBrush" Color="{StaticResource AppCardWhiteColor}"/>
+        <SolidColorBrush x:Key="AppInkBrush" Color="{StaticResource AppTextPrimaryColor}"/>
+        <SolidColorBrush x:Key="AppMutedBrush" Color="{StaticResource AppTextMutedColor}"/>
+        <SolidColorBrush x:Key="AppBorderBrush" Color="{StaticResource AppBorderSubtleColor}"/>
+        <SolidColorBrush x:Key="AppSuccessBrush" Color="{StaticResource AppSuccessColor}"/>
+        <SolidColorBrush x:Key="AppWarningBrush" Color="{StaticResource AppWarningColor}"/>
+        <SolidColorBrush x:Key="AppDangerBrush" Color="{StaticResource AppDangerColor}"/>
+        <SolidColorBrush x:Key="AppActionHoverBrush" Color="#F3F6F8"/>
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
+
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="Segoe UI Variable, Segoe UI, sans-serif"/>
+            <Setter Property="Background" Value="{StaticResource AppSurfaceBrush}"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#2B4B66"/>
+            <Setter Property="BorderBrush" Value="#2B4B66"/>
+        </Style>
+
+        <Style Selector="Button:disabled">
+            <Setter Property="Opacity" Value="0.40"/>
+        </Style>
+
+        <Style Selector="Button.nav-action">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource AppPanelBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource AppInkBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="3,1,1,1"/>
+        </Style>
+
+        <Style Selector="Button.nav-action:pointerover">
+            <Setter Property="Background" Value="{StaticResource AppActionHoverBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppAccentGoldBrush}"/>
+        </Style>
+
+        <Style Selector="Button.nav-action:pressed">
+            <Setter Property="Background" Value="#EAF0F4"/>
+            <Setter Property="Foreground" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderThickness" Value="5,1,1,1"/>
+        </Style>
+
+        <Style Selector="Button.outline-pill">
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="CornerRadius" Value="17"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+
+        <Style Selector="Button.outline-pill:pointerover">
+            <Setter Property="Background" Value="{StaticResource AppPrimaryGreenBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppPrimaryGreenBrush}"/>
+        </Style>
+
+        <Style Selector="ComboBox.header-language">
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CCFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="CornerRadius" Value="7"/>
+            <Setter Property="Background" Value="{StaticResource AppPanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="CornerRadius" Value="7"/>
+            <Setter Property="Background" Value="{StaticResource AppPanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style Selector="CheckBox">
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="Foreground" Value="{StaticResource AppInkBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AppInkBrush}"/>
+        </Style>
     </Application.Styles>
 
 </Application>

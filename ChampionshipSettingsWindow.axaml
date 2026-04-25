@@ -1,0 +1,194 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MuaythaiApp.ChampionshipSettingsWindow"
+    Width="1180"
+    Height="820"
+    Background="White"
+    Title="Championship Definitions">
+
+<Grid Margin="12" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+    <TextBlock x:Name="WindowTitleText"
+               Text="Championship Definitions"
+               FontSize="22"
+               FontWeight="Bold"/>
+
+    <Border Grid.Row="1"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="12">
+        <Grid ColumnDefinitions="1.2*,0.8*,Auto"
+              ColumnSpacing="12">
+            <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock x:Name="ChampionshipSelectorLabelText" Text="Championship"/>
+                <ComboBox x:Name="ChampionshipSelectorCombo"
+                          SelectionChanged="ChampionshipSelectionChanged"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Spacing="4">
+                <TextBlock x:Name="NewChampionshipLabelText" Text="New Championship"/>
+                <TextBox x:Name="NewChampionshipNameBox"
+                         Watermark="Championship name"/>
+            </StackPanel>
+
+            <Button Grid.Column="2"
+                    VerticalAlignment="Bottom"
+                    x:Name="CreateChampionshipButton"
+                    Content="Create"
+                    Click="CreateChampionshipClick"/>
+        </Grid>
+    </Border>
+
+    <Border x:Name="ChampionshipInformationSection"
+            Grid.Row="2"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="12">
+        <StackPanel Spacing="10">
+            <TextBlock x:Name="ChampionshipInformationTitleText"
+                       Text="Championship Information"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <Grid RowDefinitions="Auto,Auto"
+                  RowSpacing="10">
+                <Grid ColumnDefinitions="*,Auto,Auto"
+                      ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock x:Name="ChampionshipNameLabelText" Text="Championship Name"/>
+                        <TextBox x:Name="ChampionshipNameBox"
+                                 TextChanged="FormChanged"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock x:Name="StartDateLabelText" Text="Start Date"/>
+                        <TextBox x:Name="StartDateBox" Width="120" Watermark="yyyy-MM-dd" TextChanged="FormChanged"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock x:Name="EndDateLabelText" Text="End Date"/>
+                        <TextBox x:Name="EndDateBox" Width="120" Watermark="yyyy-MM-dd" TextChanged="FormChanged"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Grid.Row="1" Spacing="4">
+                    <TextBlock x:Name="ChampionshipAddressLabelText" Text="Address"/>
+                    <TextBox x:Name="ChampionshipAddressBox"
+                             TextChanged="FormChanged"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
+
+    <Border x:Name="ChampionshipRingSection"
+            Grid.Row="2"
+            BorderBrush="#D3D3D3"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="12">
+        <Grid RowDefinitions="Auto,Auto,*,Auto"
+              RowSpacing="12">
+            <TextBlock x:Name="ChampionshipRingTitleText"
+                       Text="Championship Ring Information"
+                       FontWeight="Bold"
+                       FontSize="16"/>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto,Auto"
+                  ColumnSpacing="10">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock x:Name="RingSelectionLabelText" Text="Ring"/>
+                    <ComboBox x:Name="RingDefinitionCombo"
+                              SelectionChanged="RingDefinitionSelectionChanged"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        x:Name="AddRingButton"
+                        Content="Add Ring"
+                        Click="AddRingClick"/>
+
+                <Button Grid.Column="2"
+                        VerticalAlignment="Bottom"
+                        x:Name="RemoveRingButton"
+                        Content="Remove Ring"
+                        Click="RemoveRingClick"/>
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="1.3*,0.7*"
+                  ColumnSpacing="16">
+                <StackPanel Grid.Column="0" Spacing="10">
+                    <Grid ColumnDefinitions="*,140"
+                          ColumnSpacing="12">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock x:Name="RingNameLabelText" Text="Ring"/>
+                            <TextBox x:Name="RingNameBox"
+                                     TextChanged="RingFieldChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <TextBlock x:Name="JudgesLabelText" Text="Judges"/>
+                            <TextBox x:Name="JudgesBox"
+                                     TextChanged="RingFieldChanged"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Name="DivisionsLabelText" Text="Division"/>
+                        <TextBox x:Name="DivisionNamesBox"
+                                 Watermark="Senior, U18 Junior"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="70"
+                                 TextChanged="RingFieldChanged"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock x:Name="GendersLabelText" Text="Gender"/>
+                        <TextBox x:Name="GendersBox"
+                                 Watermark="Male, Female"
+                                 TextChanged="RingFieldChanged"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        BorderBrush="#E3E3E3"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="10">
+                    <Grid RowDefinitions="Auto,*"
+                          RowSpacing="8">
+                        <TextBlock x:Name="ActiveCategoriesLabelText"
+                                   Text="Active Categories and Weights"
+                                   FontWeight="Bold"/>
+
+                        <ScrollViewer Grid.Row="1">
+                            <StackPanel x:Name="CategorySelectionPanel"
+                                        Spacing="6"/>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <TextBlock Grid.Row="3"
+                       x:Name="RingHintText"
+                       Foreground="#666"
+                       Text="Leave divisions or genders empty to allow all."/>
+        </Grid>
+    </Border>
+
+    <TextBlock Grid.Row="3"
+               x:Name="SummaryText"
+               Foreground="#444"/>
+
+    <StackPanel Grid.Row="4"
+                Orientation="Horizontal"
+                Spacing="10">
+        <Button x:Name="SaveButton" Content="Save" Click="SaveClick"/>
+    </StackPanel>
+</Grid>
+
+</Window>

@@ -51,7 +51,8 @@ public static class AppPaths
 
     public static string GetReportsDirectory()
     {
-        var directory = Path.Combine(GetAppDataDirectory(), "Reports");
+        var desktopDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        var directory = Path.Combine(desktopDirectory, "MuaythaiApp Reports");
         Directory.CreateDirectory(directory);
         return directory;
     }
